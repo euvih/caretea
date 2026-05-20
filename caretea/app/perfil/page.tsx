@@ -4,16 +4,25 @@ import Link from "next/link";
 import { useState } from "react";
 
 const unidades = [
-  { titulo: "Entendendo o TEA", modulo: "Fundamentos", concluida: true, cor: "from-[#3BA7FF] to-[#2563EB]", emoji: "🧠" },
-  { titulo: "Comunicação", modulo: "Fundamentos", concluida: true, cor: "from-[#A855F7] to-[#7E22CE]", emoji: "💬" },
-  { titulo: "Alimentação", modulo: "Desafios do dia a dia", concluida: false, cor: "from-[#FFD93D] to-[#F59E0B]", emoji: "🍽️" },
-  { titulo: "Rotina e organização", modulo: "Desafios do dia a dia", concluida: false, cor: "from-[#38BDF8] to-[#0EA5E9]", emoji: "📅" },
-  { titulo: "Socialização", modulo: "Desafios do dia a dia", concluida: false, cor: "from-[#34D399] to-[#059669]", emoji: "👥" },
-  { titulo: "Crises e desregulação", modulo: "Situações críticas", concluida: false, cor: "from-[#FF4D6D] to-[#DC2626]", emoji: "⚡" },
-  { titulo: "Regulação emocional", modulo: "Situações críticas", concluida: false, cor: "from-[#F472B6] to-[#DB2777]", emoji: "🧩" },
-  { titulo: "Segurança", modulo: "Situações críticas", concluida: false, cor: "from-[#FB923C] to-[#EA580C]", emoji: "🛡️" },
-  { titulo: "Autonomia", modulo: "Desenvolvimento e autonomia", concluida: false, cor: "from-[#4ADE80] to-[#16A34A]", emoji: "🌱" },
-  { titulo: "Cuidando do cuidador", modulo: "Saúde do cuidador", concluida: false, cor: "from-[#FDA4AF] to-[#E11D48]", emoji: "❤️" },
+  { titulo: "Entendendo o TEA", modulo: "Fundamentos", concluida: true, bg: "#EEF6FF", color: "#1356b4", icon: "🧠" },
+  { titulo: "Comunicação", modulo: "Fundamentos", concluida: true, bg: "#EEF6FF", color: "#1356b4", icon: "💬" },
+  { titulo: "Alimentação", modulo: "Desafios do dia a dia", concluida: false, bg: "#F5F0FF", color: "#7E22CE", icon: "🍽️" },
+  { titulo: "Rotina e organização", modulo: "Desafios do dia a dia", concluida: false, bg: "#EEF6FF", color: "#2563EB", icon: "📅" },
+  { titulo: "Socialização", modulo: "Desafios do dia a dia", concluida: false, bg: "#F5F0FF", color: "#6D28D9", icon: "👥" },
+  { titulo: "Crises e desregulação", modulo: "Situações críticas", concluida: false, bg: "#FFF0F3", color: "#BE123C", icon: "⚡" },
+  { titulo: "Regulação emocional", modulo: "Situações críticas", concluida: false, bg: "#FFF0F3", color: "#9F1239", icon: "🧩" },
+  { titulo: "Segurança", modulo: "Situações críticas", concluida: false, bg: "#FFFBEB", color: "#B45309", icon: "🛡️" },
+  { titulo: "Autonomia", modulo: "Desenvolvimento e autonomia", concluida: false, bg: "#F0F9FF", color: "#0369A1", icon: "🌱" },
+  { titulo: "Cuidando do cuidador", modulo: "Saúde do cuidador", concluida: false, bg: "#FDF4FF", color: "#7E22CE", icon: "❤️" },
+];
+
+const modulos = [...new Set(unidades.map((u) => u.modulo))];
+
+const configuracoes = [
+  { icon: "🔔", titulo: "Notificações", descricao: "Lembretes de estudo" },
+  { icon: "🌙", titulo: "Tema escuro", descricao: "Aparência do app" },
+  { icon: "🔒", titulo: "Privacidade", descricao: "Dados e permissões" },
+  { icon: "❓", titulo: "Ajuda e suporte", descricao: "Dúvidas e contato" },
 ];
 
 export default function Perfil() {
@@ -27,215 +36,294 @@ export default function Perfil() {
 
   const concluidas = unidades.filter((u) => u.concluida).length;
   const progresso = Math.round((concluidas / unidades.length) * 100);
+  const circunferencia = 2 * Math.PI * 52;
+  const offset = circunferencia - (progresso / 100) * circunferencia;
 
-  const salvar = () => {
-    setNome(nomeTemp);
-    setEmail(emailTemp);
-    setSobre(sobreTemp);
-    setEditando(false);
-  };
-
-  const cancelar = () => {
-    setNomeTemp(nome);
-    setEmailTemp(email);
-    setSobreTemp(sobre);
-    setEditando(false);
-  };
+  const salvar = () => { setNome(nomeTemp); setEmail(emailTemp); setSobre(sobreTemp); setEditando(false); };
+  const cancelar = () => { setNomeTemp(nome); setEmailTemp(email); setSobreTemp(sobre); setEditando(false); };
 
   return (
-    <main className="min-h-screen bg-[#d7ddf0] px-4 py-10 text-[#1E293B] md:px-8">
-      <div className="mx-auto max-w-3xl">
+    <main style={{
+      minHeight: "100vh",
+      background: "#d7ddf0",
+      fontFamily: "'DM Sans', -apple-system, sans-serif",
+      color: "#1E293B",
+      paddingBottom: "5rem",
+    }}>
 
-        {/* VOLTAR */}
-        <Link
-          href="/capacitacao"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#64748B] transition hover:text-[#3BA7FF]"
-        >
+      {/* TOP BAR */}
+      <header style={{
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "0.5px solid rgba(59,167,255,0.15)",
+        padding: "0 1.5rem",
+        height: 56,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3BA7FF" }} />
+          <span style={{ fontFamily: "Georgia, serif", fontWeight: 600, fontSize: 20, color: "#152641", letterSpacing: "-0.02em" }}>
+            CareTEA
+          </span>
+        </div>
+        <Link href="/capacitacao" style={{ fontSize: 13, color: "#3BA7FF", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
           ← Voltar
         </Link>
+      </header>
 
-        {/* HEADER DO PERFIL */}
-        <div className="mb-8 overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#3BA7FF] via-[#A855F7] to-[#FF4D6D] p-[1px] shadow-[0_20px_50px_rgba(59,167,255,0.2)]">
-          <div className="rounded-[2.5rem] bg-white p-8">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "1.5rem 1rem 0" }}>
 
-              {/* AVATAR */}
-              <div className="relative shrink-0">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#3BA7FF] to-[#A855F7] text-4xl font-black text-white shadow-lg">
-                  {nome.charAt(0)}
-                </div>
-                <button
-                  type="button"
-                  className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md text-sm border border-[#e2e8f0] transition hover:bg-[#f1f5f9]"
-                >
-                  ✏️
-                </button>
+        {/* HERO DO PERFIL */}
+        <section style={{
+          background: "linear-gradient(135deg, #3BA7FF 0%, #A855F7 60%, #FF4D6D 100%)",
+          borderRadius: 24,
+          padding: "2rem 1.5rem 1.5rem",
+          marginBottom: "1rem",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{ position: "absolute", right: -30, top: -30, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.10)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 50, bottom: -50, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.07)", pointerEvents: "none" }} />
+
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1.25rem", position: "relative" }}>
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div style={{
+                width: 68, height: 68, borderRadius: "50%",
+                background: "rgba(255,255,255,0.25)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 26, fontWeight: 700, color: "#fff",
+                border: "3px solid rgba(255,255,255,0.5)",
+              }}>
+                {nome.charAt(0)}
               </div>
+              <button type="button" onClick={() => setEditando(true)} style={{
+                position: "absolute", bottom: 0, right: 0,
+                width: 26, height: 26, borderRadius: "50%",
+                background: "#fff", border: "1px solid rgba(0,0,0,0.08)",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12,
+              }}>✏️</button>
+            </div>
 
-              {/* DADOS */}
-              <div className="flex-1 text-center sm:text-left">
-                {!editando ? (
-                  <>
-                    <h1 className="text-2xl font-black text-[#1E293B]">{nome}</h1>
-                    <p className="mt-1 text-sm text-[#64748B]">{email}</p>
-                    <p className="mt-3 text-sm leading-6 text-[#475569]">{sobre}</p>
-                    <button
-                      type="button"
-                      onClick={() => setEditando(true)}
-                      className="mt-4 rounded-full border-2 border-[#e2e8f0] px-5 py-2 text-xs font-bold text-[#64748B] transition hover:border-[#3BA7FF] hover:text-[#3BA7FF]"
-                    >
-                      Editar perfil
-                    </button>
-                  </>
-                ) : (
-                  <div className="space-y-3 w-full">
-                    <input
-                      value={nomeTemp}
-                      onChange={(e) => setNomeTemp(e.target.value)}
-                      className="w-full rounded-2xl border-2 border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm font-bold text-[#1E293B] outline-none focus:border-[#3BA7FF]"
-                      placeholder="Seu nome"
-                    />
-                    <input
-                      value={emailTemp}
-                      onChange={(e) => setEmailTemp(e.target.value)}
-                      className="w-full rounded-2xl border-2 border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm text-[#475569] outline-none focus:border-[#3BA7FF]"
-                      placeholder="Seu e-mail"
-                    />
-                    <textarea
-                      value={sobreTemp}
-                      onChange={(e) => setSobreTemp(e.target.value)}
-                      rows={2}
-                      className="w-full rounded-2xl border-2 border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm text-[#475569] outline-none focus:border-[#3BA7FF] resize-none"
-                      placeholder="Sobre você"
-                    />
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={salvar}
-                        className="rounded-full bg-gradient-to-r from-[#3BA7FF] to-[#2563EB] px-5 py-2 text-xs font-bold text-white transition hover:opacity-90"
-                      >
-                        Salvar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={cancelar}
-                        className="rounded-full border-2 border-[#e2e8f0] px-5 py-2 text-xs font-bold text-[#64748B] transition hover:border-[#DC2626] hover:text-[#DC2626]"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.7)", fontWeight: 600, marginBottom: 2 }}>
+                Cuidadora principal
+              </p>
+              {!editando ? (
+                <>
+                  <h1 style={{ fontFamily: "Georgia, serif", fontSize: 24, fontWeight: 600, color: "#fff", lineHeight: 1.2, marginBottom: 3 }}>{nome}</h1>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", marginBottom: 6 }}>{email}</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 1.5, marginBottom: 10 }}>{sobre}</p>
+                  <button type="button" onClick={() => setEditando(true)} style={{
+                    fontSize: 12, fontWeight: 600, color: "#fff",
+                    background: "rgba(255,255,255,0.2)", border: "0.5px solid rgba(255,255,255,0.4)",
+                    borderRadius: 20, padding: "5px 16px", cursor: "pointer",
+                  }}>Editar perfil</button>
+                </>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {[{ val: nomeTemp, set: setNomeTemp, ph: "Seu nome" }, { val: emailTemp, set: setEmailTemp, ph: "Seu e-mail" }].map(({ val, set, ph }) => (
+                    <input key={ph} value={val} onChange={(e) => set(e.target.value)} placeholder={ph} style={{
+                      width: "100%", borderRadius: 12, border: "1.5px solid rgba(255,255,255,0.5)",
+                      background: "rgba(255,255,255,0.2)", padding: "8px 14px",
+                      fontSize: 13, color: "#fff", outline: "none", fontFamily: "inherit",
+                    }} />
+                  ))}
+                  <textarea value={sobreTemp} onChange={(e) => setSobreTemp(e.target.value)} rows={2} placeholder="Sobre você" style={{
+                    width: "100%", borderRadius: 12, border: "1.5px solid rgba(255,255,255,0.5)",
+                    background: "rgba(255,255,255,0.2)", padding: "8px 14px",
+                    fontSize: 13, color: "#fff", outline: "none", resize: "none", fontFamily: "inherit",
+                  }} />
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button type="button" onClick={salvar} style={{
+                      background: "#fff", color: "#152641", border: "none",
+                      borderRadius: 20, padding: "7px 18px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                    }}>Salvar</button>
+                    <button type="button" onClick={cancelar} style={{
+                      background: "rgba(255,255,255,0.15)", color: "#fff",
+                      border: "0.5px solid rgba(255,255,255,0.4)",
+                      borderRadius: 20, padding: "7px 18px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                    }}>Cancelar</button>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", position: "relative" }}>
+            {["Nível Avançado", "3 certificados", "TEA — Nível 2"].map((b) => (
+              <span key={b} style={{
+                fontSize: 12, padding: "4px 14px", borderRadius: 20,
+                background: "rgba(255,255,255,0.2)", color: "#fff",
+                fontWeight: 500, border: "0.5px solid rgba(255,255,255,0.35)",
+              }}>{b}</span>
+            ))}
+          </div>
+        </section>
+
+        {/* BOTÃO SOS */}
+        <Link href="/sos" style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "#FF4D6D", borderRadius: 16, padding: "1rem 1.25rem",
+          marginBottom: "1.5rem", textDecoration: "none",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🚨</div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 2 }}>Botão SOS — Preciso de ajuda agora</p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Protocolo imediato para crises · Guia passo a passo</p>
+            </div>
+          </div>
+          <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 20 }}>›</span>
+        </Link>
 
         {/* PROGRESSO GERAL */}
-        <section className="mb-8 rounded-[2rem] bg-white/70 backdrop-blur-md p-8 shadow-sm">
-          <h2 className="mb-6 text-xl font-black text-[#1E293B]">📊 Seu progresso</h2>
-
-          <div className="mb-6 flex items-center gap-6">
-            <div className="relative flex h-24 w-24 shrink-0 items-center justify-center">
-              <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" strokeWidth="3" />
-                <circle
-                  cx="18" cy="18" r="15.9" fill="none"
-                  stroke="url(#grad)" strokeWidth="3"
-                  strokeDasharray={`${progresso} ${100 - progresso}`}
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3BA7FF" />
-                    <stop offset="100%" stopColor="#A855F7" />
-                  </linearGradient>
-                </defs>
+        <section style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.6)", padding: "1.5rem", marginBottom: "1rem" }}>
+          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#94A3B8", fontWeight: 600, marginBottom: "1rem" }}>Minha capacitação</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.5rem" }}>
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <svg width={120} height={120} style={{ transform: "rotate(-90deg)" }}>
+                <circle cx={60} cy={60} r={52} fill="none" stroke="#EEF2FF" strokeWidth={10} />
+                <circle cx={60} cy={60} r={52} fill="none" stroke="#3BA7FF" strokeWidth={10}
+                  strokeDasharray={`${circunferencia}`} strokeDashoffset={offset} strokeLinecap="round" />
               </svg>
-              <span className="text-xl font-black text-[#1E293B]">{progresso}%</span>
+              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontFamily: "Georgia, serif", fontSize: 26, fontWeight: 400, color: "#3BA7FF", lineHeight: 1 }}>{progresso}%</span>
+              </div>
             </div>
             <div>
-              <p className="text-2xl font-black text-[#1E293B]">{concluidas}/{unidades.length}</p>
-              <p className="text-sm text-[#64748B]">unidades concluídas</p>
-              <p className="mt-2 text-xs text-[#94A3B8]">
-                {unidades.length - concluidas} unidades restantes
-              </p>
+              <p style={{ fontFamily: "Georgia, serif", fontSize: 28, fontWeight: 400, color: "#152641", lineHeight: 1, marginBottom: 4 }}>{concluidas}/{unidades.length}</p>
+              <p style={{ fontSize: 13, color: "#64748B", marginBottom: 6 }}>unidades concluídas</p>
+              <p style={{ fontSize: 12, color: "#94A3B8" }}>{unidades.length - concluidas} restantes</p>
             </div>
           </div>
 
-          {/* LISTA DE UNIDADES */}
-          <div className="space-y-2">
-            {unidades.map((unidade, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 rounded-2xl bg-[#f8fafc] px-4 py-3"
-              >
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${unidade.cor} text-base`}
-                >
-                  {unidade.emoji}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="truncate text-sm font-bold text-[#1E293B]">{unidade.titulo}</p>
-                  <p className="text-xs text-[#94A3B8]">{unidade.modulo}</p>
-                </div>
-                <div
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs ${
-                    unidade.concluida
-                      ? "bg-[#16A34A] text-white"
-                      : "border-2 border-[#e2e8f0] text-[#cbd5e1]"
-                  }`}
-                >
-                  {unidade.concluida ? (
-                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    "·"
-                  )}
-                </div>
+          {modulos.map((mod) => (
+            <div key={mod} style={{ marginBottom: "1rem" }}>
+              <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#94A3B8", fontWeight: 600, marginBottom: 8 }}>{mod}</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {unidades.filter((u) => u.modulo === mod).map((u, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "center", gap: 12,
+                    background: "#F8FAFF", borderRadius: 12, padding: "10px 14px",
+                    border: "0.5px solid rgba(59,167,255,0.1)",
+                  }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, background: u.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>
+                      {u.icon}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: "#1E293B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.titulo}</p>
+                    </div>
+                    <div style={{
+                      width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: u.concluida ? "#3BA7FF" : "transparent",
+                      border: u.concluida ? "none" : "1.5px solid #CBD5E1",
+                      fontSize: 11, color: u.concluida ? "#fff" : "#CBD5E1", fontWeight: 700,
+                    }}>{u.concluida ? "✓" : "·"}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* DETECTOR DE ESGOTAMENTO */}
+        <section style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.6)", padding: "1.5rem", marginBottom: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+            <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#94A3B8", fontWeight: 600 }}>Bem-estar do cuidador</p>
+            <span style={{ fontSize: 12, color: "#B45309", fontWeight: 600 }}>Atenção moderada</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 16, marginBottom: "1rem" }}>
+            <div>
+              <p style={{ fontFamily: "Georgia, serif", fontSize: 44, fontWeight: 300, color: "#A855F7", lineHeight: 1 }}>62</p>
+              <p style={{ fontSize: 12, color: "#94A3B8" }}>de 100</p>
+            </div>
+            <div style={{ flex: 1, paddingBottom: 20 }}>
+              <div style={{ background: "#EEF2FF", borderRadius: 4, height: 6, overflow: "hidden", marginBottom: 6 }}>
+                <div style={{ height: "100%", width: "62%", borderRadius: 4, background: "linear-gradient(90deg, #3BA7FF, #A855F7, #FF4D6D)" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94A3B8" }}>
+                <span>Baixo</span><span>Moderado</span><span>Alto</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {[
+              { icon: "🌙", text: "Sono médio abaixo do recomendado nos últimos 5 dias" },
+              { icon: "👥", text: "Você não registra rede de apoio ativa esta semana" },
+              { icon: "✨", text: "Tente um exercício de pausa guiada — leva 3 minutos" },
+            ].map(({ icon, text }) => (
+              <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: "#475569", lineHeight: 1.5 }}>
+                <span style={{ flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                {text}
               </div>
             ))}
           </div>
         </section>
 
         {/* CONFIGURAÇÕES */}
-        <section className="mb-8 rounded-[2rem] bg-white/70 backdrop-blur-md p-8 shadow-sm">
-          <h2 className="mb-6 text-xl font-black text-[#1E293B]">⚙️ Configurações</h2>
-          <div className="space-y-3">
-            {[
-              { emoji: "🔔", titulo: "Notificações", descricao: "Lembretes de estudo" },
-              { emoji: "🌙", titulo: "Tema escuro", descricao: "Aparência do app" },
-              { emoji: "🔒", titulo: "Privacidade", descricao: "Dados e permissões" },
-              { emoji: "❓", titulo: "Ajuda e suporte", descricao: "Dúvidas e contato" },
-            ].map((item, i) => (
-              <button
-                key={i}
-                type="button"
-                className="flex w-full items-center gap-4 rounded-2xl bg-[#f8fafc] px-5 py-4 transition hover:bg-[#f1f5f9] active:bg-[#e2e8f0]"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-                  {item.emoji}
+        <section style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.6)", padding: "1.5rem", marginBottom: "1rem" }}>
+          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#94A3B8", fontWeight: 600, marginBottom: "1rem" }}>Configurações</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {configuracoes.map(({ icon, titulo, descricao }) => (
+              <button key={titulo} type="button" style={{
+                display: "flex", alignItems: "center", gap: 14,
+                background: "#F8FAFF", border: "0.5px solid rgba(59,167,255,0.1)",
+                borderRadius: 12, padding: "12px 14px", cursor: "pointer",
+                textAlign: "left", width: "100%", fontFamily: "inherit",
+              }}>
+                <div style={{ width: 38, height: 38, borderRadius: 10, background: "#EEF2FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+                  {icon}
                 </div>
-                <div className="flex-1 text-left">
-                  <p className="text-sm font-bold text-[#1E293B]">{item.titulo}</p>
-                  <p className="text-xs text-[#94A3B8]">{item.descricao}</p>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#1E293B", marginBottom: 2 }}>{titulo}</p>
+                  <p style={{ fontSize: 12, color: "#94A3B8" }}>{descricao}</p>
                 </div>
-                <span className="text-[#cbd5e1]">›</span>
+                <span style={{ color: "#CBD5E1", fontSize: 18 }}>›</span>
               </button>
             ))}
           </div>
         </section>
 
         {/* SAIR */}
-        <button
-          type="button"
-          className="w-full rounded-[2rem] border-2 border-[#fecdd3] bg-white/70 px-8 py-5 text-sm font-bold text-[#DC2626] backdrop-blur-md transition hover:bg-[#fef2f2]"
-        >
-          Sair da conta
-        </button>
+        <button type="button" style={{
+          width: "100%", borderRadius: 16,
+          border: "1px solid rgba(255,77,109,0.3)",
+          background: "rgba(255,255,255,0.75)",
+          padding: "1rem", fontSize: 13, fontWeight: 600,
+          color: "#FF4D6D", cursor: "pointer", fontFamily: "inherit",
+        }}>Sair da conta</button>
 
       </div>
+
+      {/* BOTTOM NAV */}
+      <nav style={{
+        position: "fixed", bottom: 0, left: 0, right: 0,
+        background: "rgba(255,255,255,0.90)", backdropFilter: "blur(12px)",
+        borderTop: "0.5px solid rgba(59,167,255,0.15)",
+        display: "flex", padding: "8px 0 12px", zIndex: 10,
+      }}>
+        {[
+          { icon: "🏠", label: "Início", href: "/" },
+          { icon: "📅", label: "Rotina", href: "/rotina" },
+          { icon: "👤", label: "Perfil", href: "/perfil", active: true },
+          { icon: "📚", label: "Aprender", href: "/capacitacao" },
+          { icon: "👥", label: "Comunidade", href: "/comunidade" },
+        ].map(({ icon, label, href, active }) => (
+          <Link key={label} href={href} style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            alignItems: "center", gap: 3, textDecoration: "none", padding: "4px 0",
+          }}>
+            <span style={{ fontSize: 20 }}>{icon}</span>
+            <span style={{ fontSize: 10, color: active ? "#3BA7FF" : "#94A3B8", fontWeight: active ? 600 : 400 }}>{label}</span>
+          </Link>
+        ))}
+      </nav>
     </main>
   );
 }
