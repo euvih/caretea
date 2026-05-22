@@ -12,7 +12,7 @@ organização da rotina;
 rede de apoio;
 prevenção de burnout.
 Mais do que um aplicativo, o CareTEA busca melhorar diretamente a qualidade de vida de famílias e cuidadores.
-##✨ Funcionalidades atuais
+## ✨ Funcionalidades atuais
 ### 👤 Perfil inteligente da pessoa com TEA
 O cuidador pode cadastrar informações importantes como:
 idade;
