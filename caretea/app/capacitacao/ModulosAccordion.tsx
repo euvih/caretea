@@ -32,9 +32,19 @@ const modulos = [
         corFundo: "bg-[#A855F7]/10",
         corSombra: "hover:shadow-[0_20px_40px_rgba(168,85,247,0.22)]",
       },
+      {
+    emoji: "🔍",
+    titulo: "Sinais de Alerta",
+    descricao: "Aprenda a identificar sinais que podem indicar TEA e quando buscar avaliação profissional.",
+    rota: "/capacitacao/unidades/sinais-de-alerta",
+    cor: "from-[#3BA7FF] to-[#1D4ED8]",
+    corTexto: "text-[#1D4ED8]",
+    corFundo: "bg-[#3BA7FF]/10",
+    corSombra: "hover:shadow-[0_20px_40px_rgba(59,167,255,0.22)]",
+  },
     ],
   },
-  {
+  /*{
     numero: "02",
     titulo: "Desafios do dia a dia",
     descricao: "Estratégias práticas para os desafios mais comuns da rotina com TEA.",
@@ -73,7 +83,7 @@ const modulos = [
         corSombra: "hover:shadow-[0_20px_40px_rgba(52,211,153,0.22)]",
       },
     ],
-  },
+  },*/
   {
     numero: "03",
     titulo: "Situações críticas",
@@ -114,7 +124,7 @@ const modulos = [
       },
     ],
   },
-  {
+  /*{
     numero: "04",
     titulo: "Desenvolvimento e autonomia",
     descricao: "Estimule a independência e o crescimento gradual de quem você cuida.",
@@ -133,7 +143,7 @@ const modulos = [
         corSombra: "hover:shadow-[0_20px_40px_rgba(74,222,128,0.22)]",
       },
     ],
-  },
+  },*/
   {
     numero: "05",
     titulo: "Saúde do cuidador",
