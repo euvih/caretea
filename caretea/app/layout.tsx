@@ -3,7 +3,33 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CareTEA",
-  description: "Plataforma para cuidadores de pessoas com TEA",
+  description: "Plataforma inteligente de apoio para cuidadores de pessoas com TEA.",
+
+  openGraph: {
+    title: "CareTEA",
+    description:
+      "Quem cuida também precisa ser cuidado.",
+    url: "https://caretea.vercel.app",
+    siteName: "CareTEA",
+    images: [
+      {
+        url: "/capa-caretea.png",
+        width: 1200,
+        height: 630,
+        alt: "CareTEA",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "CareTEA",
+    description:
+      "Plataforma inteligente de apoio para cuidadores de pessoas com TEA.",
+    images: ["/capa-caretea.png?v=2"],
+  },
 };
 
 export default function RootLayout({
