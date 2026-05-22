@@ -310,9 +310,9 @@ export default function Perfil() {
       }}>
         {[
           { icon: "🏠", label: "Início", href: "/" },
-          { icon: "📅", label: "Rotina", href: "/rotina" },
           { icon: "👤", label: "Perfil", href: "/perfil", active: true },
           { icon: "📚", label: "Aprender", href: "/capacitacao" },
+          { icon: "📅", label: "Rotina", href: "/rotina" },
           { icon: "👥", label: "Comunidade", href: "/comunidade" },
         ].map(({ icon, label, href, active }) => (
           <Link key={label} href={href} style={{
