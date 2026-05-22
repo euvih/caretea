@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: "CareTEA",
     images: [
       {
-        url: "/capa-caretea.png",
+        url: "https://caretea.vercel.app/capa-caretea.png",
         width: 1200,
         height: 630,
         alt: "CareTEA",
