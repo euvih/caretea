@@ -1,4 +1,4 @@
-# CareTEA 💙🧩
+# CareTEA🧩
 Plataforma inteligente de apoio e capacitação para cuidadores de pessoas com TEA (Transtorno do Espectro Autista).
 
 ## 📖 Sobre o projeto
