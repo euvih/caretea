@@ -77,6 +77,29 @@ export default function Capacitacao() {
 
         <ModulosAccordion />
       </section>
+      {/* BOTTOM NAV */}
+      <nav style={{
+        position: "fixed", bottom: 0, left: 0, right: 0,
+        background: "rgba(255,255,255,0.90)", backdropFilter: "blur(12px)",
+        borderTop: "0.5px solid rgba(59,167,255,0.15)",
+        display: "flex", padding: "8px 0 12px", zIndex: 10,
+      }}>
+        {[
+          { icon: "🏠", label: "Início", href: "/" },
+          { icon: "👤", label: "Perfil", href: "/perfil", active: true },
+          { icon: "📚", label: "Aprender", href: "/capacitacao" },
+          { icon: "📅", label: "Rotina", href: "/rotina" },
+          { icon: "👥", label: "Comunidade", href: "/comunidade" },
+        ].map(({ icon, label, href, active }) => (
+          <Link key={label} href={href} style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            alignItems: "center", gap: 3, textDecoration: "none", padding: "4px 0",
+          }}>
+            <span style={{ fontSize: 20 }}>{icon}</span>
+            <span style={{ fontSize: 10, color: active ? "#3BA7FF" : "#94A3B8", fontWeight: active ? 600 : 400 }}>{label}</span>
+          </Link>
+        ))}
+      </nav>
     </main>
   );
 }

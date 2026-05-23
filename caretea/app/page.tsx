@@ -108,23 +108,6 @@ export default function Home() {
               </div>
             </Link>
 
-            <Link href="/perfil" style={{ textDecoration: "none" }}>
-              <div className="card-purple" style={{
-                background: "rgba(255,255,255,0.80)", backdropFilter: "blur(10px)",
-                borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.7)",
-                borderTop: "4px solid #A855F7", padding: "1.5rem", textAlign: "left",
-              }}>
-                <div style={{ fontSize: 28, marginBottom: 10 }}>👤</div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#152641", marginBottom: 6 }}>Perfil Personalizado</h2>
-                <p style={{ fontSize: 13, lineHeight: 1.65, color: "#475569", marginBottom: 14 }}>
-                  Cadastro do perfil da pessoa com TEA para personalizar conteúdos, orientações e protocolos de crise.
-                </p>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#A855F7", display: "flex", alignItems: "center", gap: 4 }}>
-                  Ver meu perfil →
-                </span>
-              </div>
-            </Link>
-
           </div>
         </section>
 
