@@ -10,7 +10,7 @@ const modulos = [
     descricao: "O ponto de partida para todo cuidador.",
     emoji: "📖",
     cor: "#3BA7FF",
-    corBg: "rgba(59,167,255,0.12)",
+    corBg: "rgba(59,167,255,0.15)",
     unidades: [
       {
         emoji: "🧠",
@@ -41,7 +41,7 @@ const modulos = [
     descricao: "Como agir com segurança nos momentos mais desafiadores.",
     emoji: "⚡",
     cor: "#FF4D6D",
-    corBg: "rgba(255,77,109,0.12)",
+    corBg: "rgba(255,77,109,0.15)",
     unidades: [
       {
         emoji: "⚡",
@@ -72,7 +72,7 @@ const modulos = [
     descricao: "Você também importa. Aprenda a se cuidar para continuar cuidando.",
     emoji: "❤️",
     cor: "#A855F7",
-    corBg: "rgba(168,85,247,0.12)",
+    corBg: "rgba(168,85,247,0.15)",
     unidades: [
       {
         emoji: "❤️",
@@ -95,12 +95,12 @@ export default function ModulosAccordion() {
         return (
           <div
             key={modulo.numero}
-            className="overflow-hidden rounded-[1.5rem] border border-white/40 bg-white/60 backdrop-blur-md"
+            className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5 backdrop-blur-md"
           >
             <button
               type="button"
               onClick={() => setModuloAberto(aberto ? null : modulo.numero)}
-              className="flex w-full items-center gap-4 px-5 py-5 transition hover:bg-white/40 active:bg-white/60"
+              className="flex w-full items-center gap-4 px-5 py-5 transition hover:bg-white/8 active:bg-white/10"
             >
               <div
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
@@ -109,11 +109,11 @@ export default function ModulosAccordion() {
                 {modulo.emoji}
               </div>
               <div className="flex-1 text-left">
-                <p className="text-base font-black text-[#1E293B]">{modulo.titulo}</p>
-                <p className="mt-0.5 text-xs text-[#64748B]">{modulo.descricao}</p>
+                <p className="text-base font-black text-white">{modulo.titulo}</p>
+                <p className="mt-0.5 text-xs text-[#94A3B8]">{modulo.descricao}</p>
               </div>
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f1f5f9] text-sm transition-transform duration-300 ${
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm text-white transition-transform duration-300 ${
                   aberto ? "rotate-180" : ""
                 }`}
               >
@@ -127,17 +127,17 @@ export default function ModulosAccordion() {
               }`}
             >
               <div className="overflow-hidden">
-                <div className="border-t border-white/50">
+                <div className="border-t border-white/10">
                   {modulo.unidades.map((unidade, i) => (
                     <Link
                       key={i}
                       href={unidade.rota}
-                      className="flex items-center gap-4 px-5 py-4 transition hover:bg-white/50 active:bg-white/70"
+                      className="flex items-center gap-4 px-5 py-4 transition hover:bg-white/5 active:bg-white/10"
                     >
                       <span className="text-2xl">{unidade.emoji}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-[#1E293B]">{unidade.titulo}</p>
-                        <p className="mt-0.5 text-xs leading-5 text-[#64748B]">{unidade.descricao}</p>
+                        <p className="text-sm font-bold text-white">{unidade.titulo}</p>
+                        <p className="mt-0.5 text-xs leading-5 text-[#94A3B8]">{unidade.descricao}</p>
                       </div>
                       <span className="shrink-0 text-sm font-bold" style={{ color: unidade.cor }}>
                         →
