@@ -85,7 +85,7 @@ const modulos = [
     ],
   },*/
   {
-    numero: "03",
+    numero: "02",
     titulo: "Situações críticas",
     descricao: "Como agir com segurança e serenidade nos momentos mais desafiadores.",
     cor: "from-[#FF4D6D] to-[#DC2626]",
@@ -144,14 +144,14 @@ const modulos = [
       },
     ],
   },*/
-  {
-    numero: "05",
-    titulo: "Saúde do cuidador",
-    descricao: "Você também importa. Aprenda a se cuidar para continuar cuidando.",
-    cor: "from-[#FDA4AF] to-[#E11D48]",
-    corTexto: "text-[#E11D48]",
-    corFundo: "bg-[#FDA4AF]/10",
-    unidades: [
+    {
+  numero: "03",
+  titulo: "Saúde do cuidador",
+  descricao: "Você também importa. Aprenda a se cuidar para continuar cuidando.",
+  cor: "from-[#C084FC] to-[#7E22CE]",
+  corTexto: "text-[#7E22CE]",
+  corFundo: "bg-[#C084FC]/10",
+  unidades: [
       {
         emoji: "❤️",
         titulo: "Cuidando do cuidador",
