@@ -20,13 +20,6 @@ const modulos = [
         cor: "#3BA7FF",
       },
       {
-        emoji: "💬",
-        titulo: "Comunicação",
-        descricao: "Evite gatilhos e crie conexões mais saudáveis.",
-        rota: "/capacitacao/unidades/comunicacao",
-        cor: "#3BA7FF",
-      },
-      {
         emoji: "🔍",
         titulo: "Sinais de alerta",
         descricao: "Identifique sinais e saiba quando buscar avaliação profissional.",
