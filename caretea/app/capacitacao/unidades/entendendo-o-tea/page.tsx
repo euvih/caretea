@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────
-type BlocoTexto = { tipo: "texto"; conteudo: string };
-type BlocoDestaque = { tipo: "destaque"; conteudo: string };
-type BlocoCard = { tipo: "card"; cor: string; titulo: string; conteudo: string };
-type BlocoTopico = { tipo: "topico"; icone: string; titulo: string; conteudo: string };
+type BlocoTexto     = { tipo: "texto";    conteudo: string };
+type BlocoDestaque  = { tipo: "destaque"; conteudo: string };
+type BlocoCard      = { tipo: "card";     cor: string; titulo: string; conteudo: string };
+type BlocoTopico    = { tipo: "topico";   icone: string; titulo: string; conteudo: string };
 type Bloco = BlocoTexto | BlocoDestaque | BlocoCard | BlocoTopico;
 
 interface Secao {
@@ -30,7 +30,7 @@ const passos = [
     emoji: "📖",
     titulo: "Como funciona uma aula?",
     descricao:
-      "Cada aula tem um texto para ler, um vídeo ou áudio opcional, um checklist para confirmar o que você aprendeu, e um quiz rápido para fixar.",
+      "Cada aula tem vídeo do especialista, resumo rápido, texto explicativo com ilustrações, exemplos reais, exercício prático e quiz de fixação.",
     botao: "Entendi →",
   },
   {
@@ -49,7 +49,18 @@ const passos = [
   },
 ];
 
-// ─── CONTEÚDO ──────────────────────────────────────────────────────────────
+// ─── CONTEÚDO COMPLETO ─────────────────────────────────────────────────────
+
+// Resumo rápido
+const resumoRapido = [
+  { icone: "🧠", texto: "TEA é uma condição do neurodesenvolvimento, não uma doença" },
+  { icone: "🌈", texto: "Espectro = cada pessoa autista é única e diferente" },
+  { icone: "📊", texto: "3 níveis descrevem necessidade de suporte, não capacidade" },
+  { icone: "🔄", texto: "Stimming é regulação — não comportamento ruim" },
+  { icone: "🌡️", texto: "Sensibilidade sensorial causa desconforto físico real" },
+];
+
+// Seções de texto
 const secoes: Secao[] = [
   {
     id: "o-que-e",
@@ -75,6 +86,46 @@ const secoes: Secao[] = [
         tipo: "texto",
         conteudo:
           "O diagnóstico é feito por observação clínica do comportamento e do histórico de desenvolvimento. Não existe exame de sangue ou imagem para confirmar TEA.",
+      },
+    ],
+  },
+  {
+    id: "nao-e",
+    titulo: "O que NÃO é o TEA",
+    emoji: "❌",
+    conteudo: [
+      {
+        tipo: "texto",
+        conteudo:
+          "Existem muitos mitos sobre o autismo que dificultam o cuidado e a inclusão. Conhecer o que o TEA não é é tão importante quanto entender o que ele é.",
+      },
+      {
+        tipo: "topico",
+        icone: "❌",
+        titulo: "Não é falta de empatia",
+        conteudo:
+          "Pessoas autistas sentem empatia — mas a expressam de formas diferentes. O que pode parecer indiferença é geralmente dificuldade de processamento social, não ausência de sentimento.",
+      },
+      {
+        tipo: "topico",
+        icone: "❌",
+        titulo: "Não é deficiência intelectual obrigatória",
+        conteudo:
+          "O TEA não implica baixa inteligência. Muitas pessoas autistas têm inteligência típica ou acima da média. As condições podem coexistir, mas são independentes.",
+      },
+      {
+        tipo: "topico",
+        icone: "❌",
+        titulo: "Não é resultado de criação inadequada",
+        conteudo:
+          "O autismo tem base neurológica e genética. Não é causado por estilo de criação, vacinação, dieta, ou qualquer escolha dos pais.",
+      },
+      {
+        tipo: "topico",
+        icone: "❌",
+        titulo: "Não é sempre visível",
+        conteudo:
+          "Muitas pessoas autistas — especialmente mulheres e meninas — aprendem a mascarar suas diferenças. O diagnóstico tardio é muito comum.",
       },
     ],
   },
@@ -140,13 +191,6 @@ const secoes: Secao[] = [
         conteudo:
           "Movimentos repetitivos como balançar o corpo ou bater as mãos (chamados de stimming), apego intenso a rotinas, e interesses muito focados em assuntos específicos.",
       },
-      {
-        tipo: "topico",
-        icone: "❌",
-        titulo: "O que NÃO é o TEA",
-        conteudo:
-          "Falta de empatia — mito. Deficiência intelectual obrigatória — mito. Resultado de criação inadequada — mito.",
-      },
     ],
   },
   {
@@ -182,6 +226,50 @@ const secoes: Secao[] = [
   },
 ];
 
+// Infográfico do espectro
+const espectroItens = [
+  { cor: "#3BA7FF", label: "Comunicação verbal", low: "Usa frases completas", high: "Comunicação não-verbal" },
+  { cor: "#A855F7", label: "Interação social", low: "Busca contato social", high: "Prefere isolamento" },
+  { cor: "#22C55E", label: "Rotina e flexibilidade", low: "Adapta com facilidade", high: "Rigidez intensa" },
+  { cor: "#F59E0B", label: "Sensibilidade sensorial", low: "Pouco sensível", high: "Muito sensível" },
+  { cor: "#FF4D6D", label: "Necessidade de suporte", low: "Suporte leve", high: "Suporte intenso" },
+];
+
+// Exemplos reais
+const exemplosReais = [
+  {
+    nome: "Maria, 7 anos — Nível 2",
+    descricao: "Maria não fala em frases completas, mas usa um tablet com pranchas de comunicação para pedir água, expressar dor e escolher atividades. Tem rotina rígida e crise intensa se algo muda sem aviso.",
+    emoji: "👧",
+    cor: "#A855F7",
+  },
+  {
+    nome: "João, 12 anos — Nível 1",
+    descricao: "João vai à escola regular, tem ótimo desempenho em matemática e ciências, mas dificuldade em grupos e em entender sarcasmo. Parece 'normal' para muitos, mas se sente perdido em situações sociais.",
+    emoji: "👦",
+    cor: "#3BA7FF",
+  },
+  {
+    nome: "Ana, 35 anos — Diagnóstico tardio",
+    descricao: "Ana recebeu diagnóstico aos 33 anos. Por décadas mascarou suas diferenças, sentindo-se esgotada sem entender o porquê. O diagnóstico trouxe alívio e autocompreensão.",
+    emoji: "👩",
+    cor: "#22C55E",
+  },
+];
+
+// Exercício prático
+const exercicioPratico = {
+  titulo: "Exercício: Observe sem julgar",
+  descricao: "Nas próximas 24 horas, quando notar um comportamento diferente da pessoa que você cuida, pare e se pergunte:",
+  perguntas: [
+    "Esse comportamento tem uma função? (regular emoções, processar sensação...)",
+    "Há algum estímulo no ambiente que pode estar causando isso?",
+    "Estou interpretando como 'mau comportamento' algo que pode ser uma necessidade?",
+  ],
+  nota: "Escreva suas observações em um caderno. Esse exercício de atenção consciente é o primeiro passo para um cuidado mais empático.",
+};
+
+// Checklist
 const checklistItems = [
   { id: 1, texto: "TEA é um espectro — não existe um único perfil autista" },
   { id: 2, texto: "Os 3 níveis descrevem necessidade de suporte, não capacidade" },
@@ -191,6 +279,7 @@ const checklistItems = [
   { id: 6, texto: "Cada pessoa autista é única — generalizar atrapalha o cuidado" },
 ];
 
+// Quiz
 const quizPerguntas = [
   {
     pergunta: "O que o termo 'espectro' no TEA significa?",
@@ -229,8 +318,7 @@ const quizPerguntas = [
       "O stimming tem função regulatória: ajuda o sistema nervoso a processar estímulos. Suprimi-lo sem oferecer alternativas pode aumentar a ansiedade.",
   },
   {
-    pergunta:
-      "Uma pessoa autista tem crise em ambiente muito barulhento. O melhor a fazer é:",
+    pergunta: "Uma pessoa autista tem crise em ambiente muito barulhento. O melhor a fazer é:",
     opcoes: [
       "Pedir que ela se acalme",
       "Ignorar e continuar normalmente",
@@ -243,21 +331,28 @@ const quizPerguntas = [
   },
 ];
 
+// Material complementar
+const materialComplementar = [
+  { icone: "📄", titulo: "Cartilha: O que é o TEA (CFM)", tipo: "PDF", cor: "#FF4D6D" },
+  { icone: "🎥", titulo: "Documentário: O Mundo Autista", tipo: "Vídeo", cor: "#3BA7FF" },
+  { icone: "📚", titulo: "Livro: Pensar em Imagens — Temple Grandin", tipo: "Livro", cor: "#A855F7" },
+  { icone: "🌐", titulo: "Site: Autism Speaks Brasil", tipo: "Site", cor: "#22C55E" },
+];
+
 // ─── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────
 export default function EntendendoOTEA() {
   const [onboardingVisto, setOnboardingVisto] = useState(false);
-  const [passoAtual, setPassoAtual] = useState(0);
-
-  const [secaoAtiva, setSecaoAtiva] = useState(0);
-  const [tabAtiva, setTabAtiva] = useState<"video" | "audio">("video");
-  const [checados, setChecados] = useState<number[]>([]);
-  const [quizAtual, setQuizAtual] = useState(0);
+  const [passoAtual, setPassoAtual]           = useState(0);
+  const [secaoAtiva, setSecaoAtiva]           = useState(0);
+  const [tabAtiva, setTabAtiva]               = useState<"video" | "audio">("video");
+  const [checados, setChecados]               = useState<number[]>([]);
+  const [quizAtual, setQuizAtual]             = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState<number | null>(null);
-  const [quizRespondido, setQuizRespondido] = useState<boolean[]>(
-    new Array(quizPerguntas.length).fill(false)
-  );
-  const [acertos, setAcertos] = useState(0);
-  const [quizFinalizado, setQuizFinalizado] = useState(false);
+  const [quizRespondido, setQuizRespondido]   = useState<boolean[]>(new Array(quizPerguntas.length).fill(false));
+  const [acertos, setAcertos]                 = useState(0);
+  const [quizFinalizado, setQuizFinalizado]   = useState(false);
+  const [concluida, setConcluida]             = useState(false);
+  const [secaoExpandida, setSecaoExpandida]   = useState<string | null>(null);
 
   useEffect(() => {
     const visto = localStorage.getItem("caretea_onboarding_tea");
@@ -301,7 +396,11 @@ export default function EntendendoOTEA() {
     setQuizFinalizado(false);
   };
 
-  const progresso = Math.round((checados.length / checklistItems.length) * 100);
+  // Progresso geral = checklist + quiz finalizado
+  const totalItens = checklistItems.length + 1; // +1 para o quiz
+  const itensFeitos = checados.length + (quizFinalizado ? 1 : 0);
+  const progresso = Math.round((itensFeitos / totalItens) * 100);
+
   const secaoAtual = secoes[secaoAtiva];
 
   // ── ONBOARDING ──
@@ -310,7 +409,6 @@ export default function EntendendoOTEA() {
     const ehUltimo = passoAtual === passos.length - 1;
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050d1a] px-6">
-        {/* bolinhas de progresso */}
         <div className="mb-10 flex gap-2">
           {passos.map((_, i) => (
             <div
@@ -318,45 +416,37 @@ export default function EntendendoOTEA() {
               className="h-2 rounded-full transition-all duration-300"
               style={{
                 width: i === passoAtual ? 24 : 8,
-                background:
-                  i === passoAtual ? "#3BA7FF" : "rgba(255,255,255,0.15)",
+                background: i === passoAtual ? "#3BA7FF" : "rgba(255,255,255,0.15)",
               }}
             />
           ))}
         </div>
 
         <div className="w-full max-w-sm text-center">
-          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl text-5xl"
-               style={{ background: "rgba(255,255,255,0.05)" }}>
+          <div
+            className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl text-5xl"
+            style={{ background: "rgba(255,255,255,0.05)" }}
+          >
             {passo.emoji}
           </div>
           <h2 className="mb-4 text-2xl font-black text-white">{passo.titulo}</h2>
           <p className="mb-10 text-sm leading-7 text-[#94A3B8]">{passo.descricao}</p>
 
           <button
-            onClick={() => {
-              if (ehUltimo) finalizarOnboarding();
-              else setPassoAtual((p) => p + 1);
-            }}
+            onClick={() => { if (ehUltimo) finalizarOnboarding(); else setPassoAtual((p) => p + 1); }}
             className="mb-4 w-full rounded-2xl bg-[#3BA7FF] py-4 text-sm font-bold text-white transition hover:bg-[#2563EB]"
           >
             {passo.botao}
           </button>
 
           {!ehUltimo && (
-            <button
-              onClick={finalizarOnboarding}
-              className="text-xs text-[#475569] underline transition hover:text-[#64748B]"
-            >
+            <button onClick={finalizarOnboarding} className="text-xs text-[#475569] underline transition hover:text-[#64748B]">
               Pular apresentação
             </button>
           )}
 
           {passoAtual > 0 && (
-            <button
-              onClick={() => setPassoAtual((p) => p - 1)}
-              className="mt-3 block w-full text-xs text-[#334155] transition hover:text-[#475569]"
-            >
+            <button onClick={() => setPassoAtual((p) => p - 1)} className="mt-3 block w-full text-xs text-[#334155] transition hover:text-[#475569]">
               ← Voltar
             </button>
           )}
@@ -387,7 +477,6 @@ export default function EntendendoOTEA() {
           </div>
           <span className="shrink-0 text-xs font-bold text-[#3BA7FF]">{progresso}%</span>
         </div>
-        {/* barra de progresso */}
         <div className="h-[3px] bg-white/5">
           <div
             className="h-full rounded-full bg-gradient-to-r from-[#3BA7FF] to-[#A855F7] transition-all duration-700"
@@ -398,15 +487,14 @@ export default function EntendendoOTEA() {
 
       <div className="mx-auto max-w-xl px-5">
 
-        {/* HERO */}
+        {/* ─── HERO ─────────────────────────────────────────────────────── */}
         <section className="pt-8 pb-6">
           <div className="mb-4 flex items-center gap-2">
             <span className="rounded-full bg-[#3BA7FF]/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#3BA7FF]">
               Unidade 1
             </span>
-            <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] text-[#475569]">
-              ~15 min
-            </span>
+            <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] text-[#475569]">~15 min</span>
+            <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] text-[#475569]">Módulo 1</span>
           </div>
           <h1 className="mb-3 text-3xl font-black leading-tight">
             Entendendo o{" "}
@@ -414,87 +502,121 @@ export default function EntendendoOTEA() {
               TEA
             </span>
           </h1>
-          <p className="text-sm leading-7 text-[#64748B]">
+          <p className="mb-5 text-sm leading-7 text-[#64748B]">
             Conheça o espectro autista de verdade — o que é, como se manifesta e
             o que isso muda na prática para quem cuida.
           </p>
-        </section>
 
-        {/* VÍDEO / ÁUDIO */}
-        <section className="mb-8 overflow-hidden rounded-2xl border border-white/5"
-                 style={{ background: "rgba(255,255,255,0.03)" }}>
-          <div className="flex border-b border-white/5">
-            {(["video", "audio"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setTabAtiva(tab)}
-                className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition ${
-                  tabAtiva === tab
-                    ? "border-b-2 border-[#3BA7FF] text-[#3BA7FF]"
-                    : "text-[#334155] hover:text-[#475569]"
-                }`}
-              >
-                {tab === "video" ? "▶  Vídeo" : "🎧  Áudio"}
-              </button>
-            ))}
+          {/* Índice da aula */}
+          <div className="rounded-2xl border border-white/5 p-4" style={{ background: "rgba(255,255,255,0.03)" }}>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-[#334155]">Nesta aula</p>
+            <div className="flex flex-col gap-2">
+              {[
+                { n: "01", label: "Vídeo do especialista" },
+                { n: "02", label: "Resumo rápido" },
+                { n: "03", label: "Conteúdo em texto" },
+                { n: "04", label: "Infográfico do espectro" },
+                { n: "05", label: "Exemplos reais" },
+                { n: "06", label: "Exercício prático" },
+                { n: "07", label: "Quiz de fixação" },
+                { n: "08", label: "Material complementar" },
+              ].map(({ n, label }) => (
+                <div key={n} className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold text-[#3BA7FF] w-5">{n}</span>
+                  <div className="h-px flex-1 bg-white/5" />
+                  <span className="text-xs text-[#475569]">{label}</span>
+                </div>
+              ))}
+            </div>
           </div>
-
-          {tabAtiva === "video" && (
-            <div className="flex flex-col items-center gap-3 p-6 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#3BA7FF]/15 text-2xl">
-                ▶
-              </div>
-              <p className="text-sm font-semibold text-white">Introdução ao TEA</p>
-              <p className="text-xs leading-6 text-[#475569]">
-                Adicione aqui o embed do vídeo.
-                <br />
-                YouTube, Vimeo ou .mp4 hospedado.
-              </p>
-              <div className="w-full rounded-xl border border-dashed border-white/10 p-3 text-[10px] text-[#334155]"
-                   style={{ background: "rgba(255,255,255,0.03)" }}>
-                {`<iframe src="URL_DO_VIDEO" ... />`}
-              </div>
-            </div>
-          )}
-
-          {tabAtiva === "audio" && (
-            <div className="flex flex-col items-center gap-3 p-6 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#A855F7]/15 text-2xl">
-                🎧
-              </div>
-              <p className="text-sm font-semibold text-white">Versão em áudio</p>
-              <p className="text-xs leading-6 text-[#475569]">
-                Ideal para ouvir enquanto cuida.
-              </p>
-              <div className="w-full rounded-xl bg-white/5 p-4">
-                <div className="mb-3 flex justify-between text-xs text-[#475569]">
-                  <span>Entendendo o TEA</span>
-                  <span>12:40</span>
-                </div>
-                <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full w-[30%] rounded-full bg-[#A855F7]" />
-                </div>
-                <div className="flex items-center justify-center gap-6">
-                  <button className="text-xl text-[#334155] hover:text-white">⏮</button>
-                  <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#A855F7] text-white hover:bg-[#9333EA]">
-                    ▶
-                  </button>
-                  <button className="text-xl text-[#334155] hover:text-white">⏭</button>
-                </div>
-              </div>
-              <div className="w-full rounded-xl border border-dashed border-white/10 p-3 text-[10px] text-[#334155]"
-                   style={{ background: "rgba(255,255,255,0.03)" }}>
-                {`<audio src="URL_DO_AUDIO" controls />`}
-              </div>
-            </div>
-          )}
         </section>
 
-        {/* CONTEÚDO — nav por seção */}
+        {/* ─── 1. VÍDEO / ÁUDIO ─────────────────────────────────────────── */}
         <section className="mb-8">
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-[#334155]">
-            Conteúdo
-          </p>
+          <SectionLabel number="01" label="Vídeo do especialista" />
+
+          <div className="overflow-hidden rounded-2xl border border-white/5" style={{ background: "rgba(255,255,255,0.03)" }}>
+            <div className="flex border-b border-white/5">
+              {(["video", "audio"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setTabAtiva(tab)}
+                  className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition ${
+                    tabAtiva === tab
+                      ? "border-b-2 border-[#3BA7FF] text-[#3BA7FF]"
+                      : "text-[#334155] hover:text-[#475569]"
+                  }`}
+                >
+                  {tab === "video" ? "▶  Vídeo" : "🎧  Áudio"}
+                </button>
+              ))}
+            </div>
+
+            {tabAtiva === "video" && (
+              <div className="flex flex-col items-center gap-3 p-6 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#3BA7FF]/15 text-2xl">▶</div>
+                <p className="text-sm font-semibold text-white">Introdução ao TEA</p>
+                <p className="text-xs leading-6 text-[#475569]">
+                  Adicione aqui o embed do vídeo.<br />YouTube, Vimeo ou .mp4 hospedado.
+                </p>
+                <div
+                  className="w-full rounded-xl border border-dashed border-white/10 p-3 text-[10px] text-[#334155]"
+                  style={{ background: "rgba(255,255,255,0.03)" }}
+                >
+                  {`<iframe src="URL_DO_VIDEO" ... />`}
+                </div>
+              </div>
+            )}
+
+            {tabAtiva === "audio" && (
+              <div className="flex flex-col items-center gap-3 p-6 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#A855F7]/15 text-2xl">🎧</div>
+                <p className="text-sm font-semibold text-white">Versão em áudio</p>
+                <p className="text-xs leading-6 text-[#475569]">Ideal para ouvir enquanto cuida.</p>
+                <div className="w-full rounded-xl bg-white/5 p-4">
+                  <div className="mb-3 flex justify-between text-xs text-[#475569]">
+                    <span>Entendendo o TEA</span><span>12:40</span>
+                  </div>
+                  <div className="mb-4 h-1 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full w-[30%] rounded-full bg-[#A855F7]" />
+                  </div>
+                  <div className="flex items-center justify-center gap-6">
+                    <button className="text-xl text-[#334155] hover:text-white">⏮</button>
+                    <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#A855F7] text-white hover:bg-[#9333EA]">▶</button>
+                    <button className="text-xl text-[#334155] hover:text-white">⏭</button>
+                  </div>
+                </div>
+                <div
+                  className="w-full rounded-xl border border-dashed border-white/10 p-3 text-[10px] text-[#334155]"
+                  style={{ background: "rgba(255,255,255,0.03)" }}
+                >
+                  {`<audio src="URL_DO_AUDIO" controls />`}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ─── 2. RESUMO RÁPIDO ─────────────────────────────────────────── */}
+        <section className="mb-8">
+          <SectionLabel number="02" label="Resumo rápido" />
+
+          <div className="rounded-2xl border border-[#3BA7FF]/20 bg-[#3BA7FF]/5 p-5">
+            <p className="mb-4 text-xs font-bold text-[#3BA7FF]">5 pontos essenciais desta aula</p>
+            <div className="flex flex-col gap-3">
+              {resumoRapido.map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <span className="text-lg leading-none mt-0.5">{item.icone}</span>
+                  <p className="text-sm leading-6 text-[#CBD5E1]">{item.texto}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 3. CONTEÚDO EM TEXTO ─────────────────────────────────────── */}
+        <section className="mb-8">
+          <SectionLabel number="03" label="Conteúdo em texto" />
 
           {/* abas de seção */}
           <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
@@ -515,8 +637,7 @@ export default function EntendendoOTEA() {
           </div>
 
           {/* card de conteúdo */}
-          <div className="rounded-2xl border border-white/5 p-6"
-               style={{ background: "rgba(255,255,255,0.03)" }}>
+          <div className="rounded-2xl border border-white/5 p-6" style={{ background: "rgba(255,255,255,0.03)" }}>
             <div className="mb-5 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3BA7FF]/15 text-xl">
                 {secaoAtual.emoji}
@@ -528,17 +649,12 @@ export default function EntendendoOTEA() {
               {secaoAtual.conteudo.map((bloco, i) => {
                 if (bloco.tipo === "texto") {
                   return (
-                    <p key={i} className="text-sm leading-7 text-[#94A3B8]">
-                      {bloco.conteudo}
-                    </p>
+                    <p key={i} className="text-sm leading-7 text-[#94A3B8]">{bloco.conteudo}</p>
                   );
                 }
                 if (bloco.tipo === "destaque") {
                   return (
-                    <div
-                      key={i}
-                      className="rounded-xl border border-[#3BA7FF]/20 bg-[#3BA7FF]/10 p-4"
-                    >
+                    <div key={i} className="rounded-xl border border-[#3BA7FF]/20 bg-[#3BA7FF]/10 p-4">
                       <p className="text-sm leading-7 text-[#CBD5E1]">{bloco.conteudo}</p>
                     </div>
                   );
@@ -548,17 +664,9 @@ export default function EntendendoOTEA() {
                     <div
                       key={i}
                       className="rounded-xl p-4"
-                      style={{
-                        background: `${bloco.cor}12`,
-                        border: `1px solid ${bloco.cor}25`,
-                      }}
+                      style={{ background: `${bloco.cor}12`, border: `1px solid ${bloco.cor}25` }}
                     >
-                      <p
-                        className="mb-1 text-xs font-black"
-                        style={{ color: bloco.cor }}
-                      >
-                        {bloco.titulo}
-                      </p>
+                      <p className="mb-1 text-xs font-black" style={{ color: bloco.cor }}>{bloco.titulo}</p>
                       <p className="text-xs leading-6 text-[#94A3B8]">{bloco.conteudo}</p>
                     </div>
                   );
@@ -590,9 +698,7 @@ export default function EntendendoOTEA() {
             >
               ← Anterior
             </button>
-            <span className="text-xs text-[#334155]">
-              {secaoAtiva + 1} / {secoes.length}
-            </span>
+            <span className="text-xs text-[#334155]">{secaoAtiva + 1} / {secoes.length}</span>
             <button
               onClick={() => setSecaoAtiva((s) => Math.min(secoes.length - 1, s + 1))}
               disabled={secaoAtiva === secoes.length - 1}
@@ -603,23 +709,130 @@ export default function EntendendoOTEA() {
           </div>
         </section>
 
-        {/* CHECKLIST */}
+        {/* ─── 4. INFOGRÁFICO DO ESPECTRO ───────────────────────────────── */}
         <section className="mb-8">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#334155]">
-              O que aprendi
+          <SectionLabel number="04" label="Infográfico: O espectro" />
+
+          <div className="rounded-2xl border border-white/5 p-5" style={{ background: "rgba(255,255,255,0.03)" }}>
+            <p className="mb-1 text-sm font-bold text-white">O espectro não é uma linha reta</p>
+            <p className="mb-5 text-xs leading-6 text-[#64748B]">
+              Cada pessoa autista tem um perfil único. Veja como as características variam em cada dimensão:
             </p>
-            <span className="text-xs font-bold text-[#3BA7FF]">
-              {checados.length} de {checklistItems.length}
-            </span>
+
+            <div className="flex flex-col gap-5">
+              {espectroItens.map((item, i) => (
+                <div key={i}>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-xs font-bold" style={{ color: item.cor }}>{item.label}</span>
+                  </div>
+                  <div className="relative h-2 rounded-full bg-white/10">
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-full"
+                      style={{
+                        width: "100%",
+                        background: `linear-gradient(to right, ${item.cor}33, ${item.cor})`,
+                      }}
+                    />
+                    {/* Indicador de espectro */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-white shadow-lg"
+                      style={{
+                        left: `${[30, 60, 45, 70, 40][i]}%`,
+                        background: item.cor,
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    />
+                  </div>
+                  <div className="mt-1 flex justify-between">
+                    <span className="text-[10px] text-[#334155]">{item.low}</span>
+                    <span className="text-[10px] text-[#334155]">{item.high}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 rounded-xl bg-white/5 p-4">
+              <p className="text-xs leading-6 text-[#64748B]">
+                💡 <span className="font-bold text-white">Como ler este gráfico:</span> o ponto colorido mostra um exemplo de onde uma pessoa autista pode estar em cada dimensão. Cada pessoa tem um ponto diferente — por isso o autismo é um espectro.
+              </p>
+            </div>
           </div>
+        </section>
+
+        {/* ─── 5. EXEMPLOS REAIS ────────────────────────────────────────── */}
+        <section className="mb-8">
+          <SectionLabel number="05" label="Exemplos reais" />
           <p className="mb-4 text-xs leading-6 text-[#475569]">
-            Marque os pontos que você já entendeu. Não precisa marcar tudo agora — volte
-            quando quiser.
+            Conheça três perfis diferentes para entender na prática como o espectro se manifesta.
           </p>
 
-          <div className="overflow-hidden rounded-2xl border border-white/5"
-               style={{ background: "rgba(255,255,255,0.03)" }}>
+          <div className="flex flex-col gap-4">
+            {exemplosReais.map((ex, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border p-5"
+                style={{
+                  background: `${ex.cor}08`,
+                  border: `1px solid ${ex.cor}20`,
+                }}
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded-2xl text-xl"
+                    style={{ background: `${ex.cor}20` }}
+                  >
+                    {ex.emoji}
+                  </div>
+                  <p className="text-sm font-bold text-white">{ex.nome}</p>
+                </div>
+                <p className="text-xs leading-6 text-[#94A3B8]">{ex.descricao}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── 6. EXERCÍCIO PRÁTICO ─────────────────────────────────────── */}
+        <section className="mb-8">
+          <SectionLabel number="06" label="Exercício prático" />
+
+          <div className="rounded-2xl border border-[#22C55E]/20 bg-[#22C55E]/5 p-5">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#22C55E]/20 text-xl">
+                ✍️
+              </div>
+              <p className="text-sm font-bold text-white">{exercicioPratico.titulo}</p>
+            </div>
+            <p className="mb-4 text-xs leading-6 text-[#94A3B8]">{exercicioPratico.descricao}</p>
+
+            <div className="flex flex-col gap-3 mb-4">
+              {exercicioPratico.perguntas.map((p, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-xl bg-white/5 p-3">
+                  <span className="text-xs font-bold text-[#22C55E] mt-0.5">{i + 1}.</span>
+                  <p className="text-xs leading-6 text-[#94A3B8]">{p}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-xl border border-[#22C55E]/20 bg-[#22C55E]/10 p-3">
+              <p className="text-xs leading-6 text-[#CBD5E1]">
+                <span className="font-bold text-[#22C55E]">💡 Dica: </span>
+                {exercicioPratico.nota}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── CHECKLIST ────────────────────────────────────────────────── */}
+        <section className="mb-8">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#334155]">O que aprendi</p>
+            <span className="text-xs font-bold text-[#3BA7FF]">{checados.length} de {checklistItems.length}</span>
+          </div>
+          <p className="mb-4 text-xs leading-6 text-[#475569]">
+            Marque os pontos que você já entendeu. Não precisa marcar tudo agora — volte quando quiser.
+          </p>
+
+          <div className="overflow-hidden rounded-2xl border border-white/5" style={{ background: "rgba(255,255,255,0.03)" }}>
             {checklistItems.map((item, i) => {
               const checked = checados.includes(item.id);
               return (
@@ -637,9 +850,7 @@ export default function EntendendoOTEA() {
                       border: checked ? "none" : "1.5px solid rgba(255,255,255,0.2)",
                     }}
                   >
-                    {checked && (
-                      <span className="text-[11px] font-bold text-white">✓</span>
-                    )}
+                    {checked && <span className="text-[11px] font-bold text-white">✓</span>}
                   </div>
                   <p
                     className="text-sm leading-6 transition"
@@ -657,27 +868,21 @@ export default function EntendendoOTEA() {
 
           {checados.length === checklistItems.length && (
             <div className="mt-3 rounded-2xl bg-[#3BA7FF]/10 p-4 text-center">
-              <p className="text-sm font-bold text-[#3BA7FF]">
-                🎉 Você marcou todos os pontos. Ótimo trabalho!
-              </p>
+              <p className="text-sm font-bold text-[#3BA7FF]">🎉 Você marcou todos os pontos. Ótimo trabalho!</p>
             </div>
           )}
         </section>
 
-        {/* QUIZ */}
+        {/* ─── 7. QUIZ ──────────────────────────────────────────────────── */}
         <section className="mb-8">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#334155]">
-            Quiz de fixação
-          </p>
+          <SectionLabel number="07" label="Quiz de fixação" />
           <p className="mb-4 text-xs leading-6 text-[#475569]">
             Não é uma prova — é só para ajudar a fixar o que você aprendeu.
           </p>
 
-          <div className="overflow-hidden rounded-2xl border border-white/5"
-               style={{ background: "rgba(255,255,255,0.03)" }}>
+          <div className="overflow-hidden rounded-2xl border border-white/5" style={{ background: "rgba(255,255,255,0.03)" }}>
             {!quizFinalizado ? (
               <div className="p-5">
-                {/* barra do quiz */}
                 <div className="mb-5 flex gap-2">
                   {quizPerguntas.map((_, i) => (
                     <div
@@ -710,19 +915,9 @@ export default function EntendendoOTEA() {
                     let border = "rgba(255,255,255,0.08)";
                     let color = "#94A3B8";
                     if (respondido) {
-                      if (i === correta) {
-                        bg = "rgba(34,197,94,0.10)";
-                        border = "rgba(34,197,94,0.30)";
-                        color = "#22c55e";
-                      } else if (i === respostaSelecionada) {
-                        bg = "rgba(255,77,109,0.10)";
-                        border = "rgba(255,77,109,0.30)";
-                        color = "#FF4D6D";
-                      } else {
-                        bg = "rgba(255,255,255,0.02)";
-                        border = "rgba(255,255,255,0.04)";
-                        color = "#334155";
-                      }
+                      if (i === correta) { bg = "rgba(34,197,94,0.10)"; border = "rgba(34,197,94,0.30)"; color = "#22c55e"; }
+                      else if (i === respostaSelecionada) { bg = "rgba(255,77,109,0.10)"; border = "rgba(255,77,109,0.30)"; color = "#FF4D6D"; }
+                      else { bg = "rgba(255,255,255,0.02)"; border = "rgba(255,255,255,0.04)"; color = "#334155"; }
                     }
                     return (
                       <button
@@ -730,15 +925,9 @@ export default function EntendendoOTEA() {
                         onClick={() => responder(i)}
                         disabled={respondido}
                         className="rounded-xl px-4 py-4 text-left text-sm font-medium leading-6 transition"
-                        style={{
-                          background: bg,
-                          border: `1px solid ${border}`,
-                          color,
-                        }}
+                        style={{ background: bg, border: `1px solid ${border}`, color }}
                       >
-                        <span className="mr-2 font-bold opacity-40">
-                          {["A", "B", "C", "D"][i]}.
-                        </span>
+                        <span className="mr-2 font-bold opacity-40">{["A", "B", "C", "D"][i]}.</span>
                         {opcao}
                       </button>
                     );
@@ -755,9 +944,7 @@ export default function EntendendoOTEA() {
                       onClick={proximaPergunta}
                       className="w-full rounded-xl bg-[#3BA7FF] py-4 text-sm font-bold text-white transition hover:bg-[#2563EB]"
                     >
-                      {quizAtual < quizPerguntas.length - 1
-                        ? "Próxima →"
-                        : "Ver resultado →"}
+                      {quizAtual < quizPerguntas.length - 1 ? "Próxima →" : "Ver resultado →"}
                     </button>
                   </div>
                 )}
@@ -765,21 +952,11 @@ export default function EntendendoOTEA() {
             ) : (
               <div className="p-6 text-center">
                 <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#3BA7FF]/15 text-4xl">
-                  {acertos === quizPerguntas.length
-                    ? "🏆"
-                    : acertos >= quizPerguntas.length / 2
-                    ? "⭐"
-                    : "📚"}
+                  {acertos === quizPerguntas.length ? "🏆" : acertos >= quizPerguntas.length / 2 ? "⭐" : "📚"}
                 </div>
-                <p className="mb-1 text-3xl font-black text-white">
-                  {acertos}/{quizPerguntas.length}
-                </p>
+                <p className="mb-1 text-3xl font-black text-white">{acertos}/{quizPerguntas.length}</p>
                 <p className="mb-2 text-sm font-semibold text-[#3BA7FF]">
-                  {acertos === quizPerguntas.length
-                    ? "Perfeito!"
-                    : acertos >= quizPerguntas.length / 2
-                    ? "Muito bem!"
-                    : "Continue aprendendo!"}
+                  {acertos === quizPerguntas.length ? "Perfeito!" : acertos >= quizPerguntas.length / 2 ? "Muito bem!" : "Continue aprendendo!"}
                 </p>
                 <p className="mb-6 text-xs leading-6 text-[#64748B]">
                   {acertos === quizPerguntas.length
@@ -799,9 +976,59 @@ export default function EntendendoOTEA() {
           </div>
         </section>
 
-        {/* AJUDA */}
-        <div className="mb-6 flex items-center justify-between rounded-2xl border border-white/5 px-5 py-4"
-             style={{ background: "rgba(255,255,255,0.03)" }}>
+        {/* ─── 8. MATERIAL COMPLEMENTAR ─────────────────────────────────── */}
+        <section className="mb-8">
+          <SectionLabel number="08" label="Material complementar" />
+          <p className="mb-4 text-xs leading-6 text-[#475569]">
+            Quer se aprofundar? Separamos recursos confiáveis para você explorar no seu ritmo.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            {materialComplementar.map((m, i) => (
+              <button
+                key={i}
+                className="flex items-center gap-4 rounded-2xl border border-white/5 px-4 py-4 text-left transition hover:bg-white/5"
+                style={{ background: "rgba(255,255,255,0.03)" }}
+              >
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl"
+                  style={{ background: `${m.cor}20` }}
+                >
+                  {m.icone}
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-white">{m.titulo}</p>
+                  <p className="text-[10px] text-[#475569]">{m.tipo}</p>
+                </div>
+                <span className="text-sm text-[#334155]">→</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── BOTÃO MARCAR COMO CONCLUÍDA ──────────────────────────────── */}
+        <section className="mb-8">
+          {!concluida ? (
+            <button
+              onClick={() => setConcluida(true)}
+              className="w-full rounded-2xl bg-gradient-to-r from-[#3BA7FF] to-[#A855F7] py-5 text-sm font-black text-white shadow-lg transition hover:opacity-90"
+            >
+              ✓ Marcar aula como concluída
+            </button>
+          ) : (
+            <div className="rounded-2xl bg-[#22C55E]/10 border border-[#22C55E]/20 p-5 text-center">
+              <p className="text-2xl mb-2">🎉</p>
+              <p className="text-sm font-black text-[#22C55E]">Aula concluída!</p>
+              <p className="text-xs text-[#475569] mt-1">Progresso salvo. Continue para a próxima unidade.</p>
+            </div>
+          )}
+        </section>
+
+        {/* ─── AJUDA ────────────────────────────────────────────────────── */}
+        <div
+          className="mb-6 flex items-center justify-between rounded-2xl border border-white/5 px-5 py-4"
+          style={{ background: "rgba(255,255,255,0.03)" }}
+        >
           <p className="text-xs text-[#334155]">Ficou com dúvida sobre algo?</p>
           <button
             onClick={() => {
@@ -815,7 +1042,7 @@ export default function EntendendoOTEA() {
           </button>
         </div>
 
-        {/* PRÓXIMA UNIDADE */}
+        {/* ─── PRÓXIMA UNIDADE ──────────────────────────────────────────── */}
         <Link
           href="/capacitacao/unidades/comunicacao"
           className="mb-8 flex items-center gap-4 rounded-2xl border border-white/5 p-5 transition hover:bg-white/5"
@@ -825,9 +1052,7 @@ export default function EntendendoOTEA() {
             💬
           </div>
           <div className="flex-1">
-            <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#334155]">
-              Próxima unidade
-            </p>
+            <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#334155]">Próxima unidade</p>
             <p className="text-sm font-bold text-white">Comunicação</p>
             <p className="text-xs text-[#475569]">Como se comunicar e evitar gatilhos</p>
           </div>
@@ -836,13 +1061,11 @@ export default function EntendendoOTEA() {
 
       </div>
 
-      {/* BOTTOM NAV */}
+      {/* ─── BOTTOM NAV ───────────────────────────────────────────────────── */}
       <nav
         style={{
           position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: 0, left: 0, right: 0,
           background: "rgba(5,13,26,0.97)",
           backdropFilter: "blur(16px)",
           borderTop: "0.5px solid rgba(59,167,255,0.10)",
@@ -852,11 +1075,11 @@ export default function EntendendoOTEA() {
         }}
       >
         {[
-          { icon: "🏠", label: "Início", href: "/" },
-          { icon: "👤", label: "Perfil", href: "/perfil" },
-          { icon: "📚", label: "Aprender", href: "/capacitacao", active: true },
-          { icon: "📅", label: "Rotina", href: "/rotina" },
-          { icon: "👥", label: "Comunidade", href: "/comunidade" },
+          { icon: "🏠", label: "Início",    href: "/" },
+          { icon: "👤", label: "Perfil",    href: "/perfil" },
+          { icon: "📚", label: "Aprender",  href: "/capacitacao", active: true },
+          { icon: "📅", label: "Rotina",    href: "/rotina" },
+          { icon: "👥", label: "Comunidade",href: "/comunidade" },
         ].map(({ icon, label, href, active }) => (
           <Link
             key={label}
@@ -872,18 +1095,25 @@ export default function EntendendoOTEA() {
             }}
           >
             <span style={{ fontSize: 22 }}>{icon}</span>
-            <span
-              style={{
-                fontSize: 10,
-                color: active ? "#3BA7FF" : "#334155",
-                fontWeight: active ? 700 : 400,
-              }}
-            >
+            <span style={{ fontSize: 10, color: active ? "#3BA7FF" : "#334155", fontWeight: active ? 700 : 400 }}>
               {label}
             </span>
           </Link>
         ))}
       </nav>
     </main>
+  );
+}
+
+// ─── COMPONENTE AUXILIAR ───────────────────────────────────────────────────
+function SectionLabel({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#3BA7FF]/15 text-[11px] font-black text-[#3BA7FF]">
+        {number}
+      </div>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-[#334155]">{label}</p>
+      <div className="flex-1 h-px bg-white/5" />
+    </div>
   );
 }
