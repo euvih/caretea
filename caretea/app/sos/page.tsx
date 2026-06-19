@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -7,7 +8,7 @@ type Passo = {
   emoji: string;
   titulo: string;
   descricao: string;
-  timer?: number; // segundos
+  timer?: number;
   respiracao?: boolean;
 };
 
@@ -20,6 +21,7 @@ type Crise = {
   corClara: string;
   frase: string;
   passos: Passo[];
+  maisInfo?: { intro?: string; itens: string[]; lembrete?: string };
 };
 
 const crises: Crise[] = [
@@ -38,6 +40,31 @@ const crises: Crise[] = [
       { emoji: "🗣️", titulo: "Fale pouco", descricao: "Use frases curtas e voz calma. Evite perguntas agora.", timer: 0 },
       { emoji: "⏳", titulo: "Aguarde com calma", descricao: "Dê espaço e tempo. Não force contato físico.", timer: 120 },
     ],
+    maisInfo: {
+      intro: "Mantenha a calma e fale com voz baixa e tranquila.",
+      itens: [
+        "Afaste a pessoa da fonte de estímulo (barulho, luz forte, muitas pessoas, cheiros intensos, etc.).",
+        "Leve-a para um local mais silencioso, seguro e com menos estímulos sensoriais.",
+        "Reduza luzes fortes, sons altos e movimentação ao redor.",
+        "Dê espaço físico. Evite tocar sem permissão, pois o toque pode aumentar o desconforto.",
+        "Use frases curtas e simples: \"Você está seguro.\" / \"Estou aqui para ajudar.\" / \"Vamos para um lugar mais calmo.\"",
+        "Não faça muitas perguntas ao mesmo tempo.",
+        "Não exija contato visual.",
+        "Não peça para a pessoa \"parar\", \"se controlar\" ou \"se acalmar\".",
+        "Não repreenda, brigue ou faça ameaças.",
+        "Se a pessoa usar recursos de regulação (fone abafador, brinquedo sensorial, objeto de conforto, cobertor pesado), incentive o uso.",
+        "Observe sinais de risco para a própria pessoa ou para terceiros.",
+        "Caso haja risco de ferimentos, retire objetos perigosos do ambiente.",
+        "Permita que a crise siga seu curso de forma segura. Muitas vezes a pessoa precisa de tempo para se reorganizar.",
+        "Após a crise diminuir, continue falando calmamente e evite comentários críticos.",
+        "Ofereça água, descanso ou um ambiente tranquilo para recuperação.",
+        "Converse sobre o ocorrido apenas depois que a pessoa estiver totalmente regulada.",
+        "Tente identificar o gatilho para prevenir novas crises no futuro.",
+        "Registre padrões observados (horário, local, estímulos presentes, duração da crise).",
+        "Se as crises forem frequentes ou muito intensas, procure orientação de profissionais especializados em TEA.",
+      ],
+      lembrete: "Uma crise sensorial não é birra, desobediência ou falta de limites. É uma resposta involuntária do sistema nervoso a uma sobrecarga de estímulos.",
+    },
   },
   {
     id: "agressividade",
@@ -121,6 +148,111 @@ const crises: Crise[] = [
   },
 ];
 
+// ── MODAL MAIS SOBRE ────────────────────────────────────────────────────────
+function ModalMaisSobre({ crise, onFechar }: { crise: Crise; onFechar: () => void }) {
+  const info = crise.maisInfo;
+  if (!info) return null;
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 1000,
+      display: "flex", flexDirection: "column",
+    }}>
+      {/* Backdrop */}
+      <div
+        onClick={onFechar}
+        style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
+      />
+
+      {/* Sheet */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        background: "#fff", borderRadius: "24px 24px 0 0",
+        maxHeight: "88dvh", display: "flex", flexDirection: "column",
+        fontFamily: "'DM Sans', -apple-system, sans-serif",
+        boxShadow: "0 -8px 40px rgba(0,0,0,0.18)",
+      }}>
+        {/* Handle + header */}
+        <div style={{ padding: "12px 1.25rem 0", flexShrink: 0 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 999, background: "#E2E8F0", margin: "0 auto 14px" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: crise.cor + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
+                {crise.emoji}
+              </div>
+              <div>
+                <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: crise.cor, marginBottom: 1 }}>Mais sobre</p>
+                <h3 style={{ fontSize: 16, fontWeight: 800, color: "#1E293B", margin: 0 }}>{crise.titulo}</h3>
+              </div>
+            </div>
+            <button onClick={onFechar} style={{
+              width: 32, height: 32, borderRadius: "50%",
+              background: "#F1F5F9", border: "none",
+              fontSize: 14, cursor: "pointer", color: "#64748B",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>✕</button>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: "#F1F5F9", margin: "12px 0 0", flexShrink: 0 }} />
+
+        {/* Conteúdo scrollável */}
+        <div style={{ overflowY: "auto", padding: "1rem 1.25rem 2rem", flex: 1 }}>
+
+          {/* Intro */}
+          {info.intro && (
+            <div style={{
+              background: crise.cor + "12", border: `1px solid ${crise.cor}30`,
+              borderRadius: 14, padding: "10px 14px", marginBottom: 16,
+            }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: crise.corSolida, lineHeight: 1.6, margin: 0 }}>
+                💡 {info.intro}
+              </p>
+            </div>
+          )}
+
+          {/* Lista numerada */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {info.itens.map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: 8, flexShrink: 0,
+                  background: crise.cor + "18",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, fontWeight: 800, color: crise.corSolida,
+                  marginTop: 1,
+                }}>
+                  {i + 1}
+                </div>
+                <p style={{ fontSize: 13, color: "#334155", lineHeight: 1.65, margin: 0, flex: 1 }}>
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Lembrete */}
+          {info.lembrete && (
+            <div style={{
+              marginTop: 20,
+              background: "#FFF7ED", border: "1px solid #FED7AA",
+              borderRadius: 14, padding: "12px 14px",
+            }}>
+              <p style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "#C2410C", marginBottom: 6 }}>
+                ⚠️ Lembrete importante
+              </p>
+              <p style={{ fontSize: 13, color: "#7C2D12", lineHeight: 1.65, margin: 0 }}>
+                {info.lembrete}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── RESPIRAÇÃO ANIMADA ──────────────────────────────────────────────────────
 function RespiracaoGuiada({ cor }: { cor: string }) {
   const [fase, setFase] = useState<"inspire" | "segure" | "expire">("inspire");
@@ -163,12 +295,10 @@ function RespiracaoGuiada({ cor }: { cor: string }) {
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "0.5rem 0 1rem" }}>
       <div style={{
         width: 100, height: 100, borderRadius: "50%",
-        background: cor + "22",
-        border: `3px solid ${cor}`,
+        background: cor + "22", border: `3px solid ${cor}`,
         display: "flex", alignItems: "center", justifyContent: "center",
         transform: `scale(${scale})`,
-        transition: "transform 0.8s ease-in-out",
-        marginBottom: 16,
+        transition: "transform 0.8s ease-in-out", marginBottom: 16,
       }}>
         <span style={{ fontSize: 32 }}>🌬️</span>
       </div>
@@ -233,7 +363,7 @@ function Timer({ segundos, cor }: { segundos: number; cor: string }) {
   );
 }
 
-// ── MODO CRISE (uma instrução por vez) ──────────────────────────────────────
+// ── MODO CRISE ──────────────────────────────────────────────────────────────
 function ModoCrise({ crise, onSair }: { crise: Crise; onSair: () => void }) {
   const [passoAtual, setPassoAtual] = useState(0);
   const [concluidos, setConcluidos] = useState<boolean[]>(new Array(crise.passos.length).fill(false));
@@ -257,9 +387,7 @@ function ModoCrise({ crise, onSair }: { crise: Crise; onSair: () => void }) {
         fontFamily: "'DM Sans', -apple-system, sans-serif",
       }}>
         <div style={{ fontSize: 64, marginBottom: 16 }}>💙</div>
-        <h2 style={{ fontSize: 28, fontWeight: 900, color: crise.corSolida, marginBottom: 12 }}>
-          Você conseguiu.
-        </h2>
+        <h2 style={{ fontSize: 28, fontWeight: 900, color: crise.corSolida, marginBottom: 12 }}>Você conseguiu.</h2>
         <p style={{ fontSize: 15, lineHeight: 1.7, color: "#475569", maxWidth: 320, marginBottom: 32 }}>
           Todos os passos foram concluídos. Respire. Você fez o possível pela pessoa que cuida.
         </p>
@@ -275,107 +403,49 @@ function ModoCrise({ crise, onSair }: { crise: Crise; onSair: () => void }) {
   }
 
   return (
-    <div style={{
-      minHeight: "100vh", background: "#0F172A",
-      display: "flex", flexDirection: "column",
-      fontFamily: "'DM Sans', -apple-system, sans-serif",
-    }}>
-      {/* BARRA TOPO */}
-      <div style={{
-        padding: "1rem 1.25rem 0.75rem",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <button onClick={onSair} style={{
-          background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 12,
-          width: 40, height: 40, color: "#fff", fontSize: 16,
-          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-        }}>←</button>
-        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)" }}>
-          Modo Crise
-        </span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: crise.cor }}>
-          {passoAtual + 1}/{crise.passos.length}
-        </span>
+    <div style={{ minHeight: "100vh", background: "#0F172A", display: "flex", flexDirection: "column", fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
+      <div style={{ padding: "1rem 1.25rem 0.75rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button onClick={onSair} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 12, width: 40, height: 40, color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
+        <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.4)" }}>Modo Crise</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: crise.cor }}>{passoAtual + 1}/{crise.passos.length}</span>
       </div>
 
-      {/* BARRA PROGRESSO */}
       <div style={{ display: "flex", gap: 4, padding: "0 1.25rem 1rem" }}>
         {crise.passos.map((_, i) => (
-          <div key={i} style={{
-            flex: 1, height: 3, borderRadius: 999,
-            background: i <= passoAtual ? crise.cor : "rgba(255,255,255,0.12)",
-            transition: "background 0.3s",
-          }} />
+          <div key={i} style={{ flex: 1, height: 3, borderRadius: 999, background: i <= passoAtual ? crise.cor : "rgba(255,255,255,0.12)", transition: "background 0.3s" }} />
         ))}
       </div>
 
-      {/* FRASE ÂNCORA */}
-      <div style={{
-        margin: "0 1.25rem 1rem",
-        background: crise.cor + "20",
-        borderRadius: 16, padding: "10px 16px",
-        border: `1px solid ${crise.cor}40`,
-      }}>
-        <p style={{ fontSize: 13, fontWeight: 600, color: crise.cor, textAlign: "center" }}>
-          {crise.frase}
-        </p>
+      <div style={{ margin: "0 1.25rem 1rem", background: crise.cor + "20", borderRadius: 16, padding: "10px 16px", border: `1px solid ${crise.cor}40` }}>
+        <p style={{ fontSize: 13, fontWeight: 600, color: crise.cor, textAlign: "center" }}>{crise.frase}</p>
       </div>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 1.25rem" }}>
-
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ fontSize: 72, marginBottom: 12, lineHeight: 1 }}>{passo.emoji}</div>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: crise.cor, marginBottom: 8 }}>
-            Passo {passoAtual + 1}
-          </p>
-          <h2 style={{ fontSize: 30, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 12 }}>
-            {passo.titulo}
-          </h2>
-          <p style={{ fontSize: 16, lineHeight: 1.7, color: "rgba(255,255,255,0.65)", maxWidth: 340, margin: "0 auto" }}>
-            {passo.descricao}
-          </p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: crise.cor, marginBottom: 8 }}>Passo {passoAtual + 1}</p>
+          <h2 style={{ fontSize: 30, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 12 }}>{passo.titulo}</h2>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: "rgba(255,255,255,0.65)", maxWidth: 340, margin: "0 auto" }}>{passo.descricao}</p>
         </div>
-
-        {/* RESPIRAÇÃO */}
         {passo.respiracao && (
           <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "1.25rem", marginBottom: "1.5rem" }}>
             <RespiracaoGuiada cor={crise.cor} />
           </div>
         )}
-
-        {/* TIMER */}
         {passo.timer && passo.timer > 0 && !passo.respiracao && (
           <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 20, padding: "1.25rem", marginBottom: "1.5rem" }}>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>
-              Temporizador
-            </p>
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>Temporizador</p>
             <Timer segundos={passo.timer} cor={crise.cor} />
           </div>
         )}
-
       </div>
 
-      {/* BOTÃO CONCLUIR */}
       <div style={{ padding: "1rem 1.25rem 2rem" }}>
-        <button
-          onClick={marcarConcluido}
-          style={{
-            width: "100%", background: crise.cor, border: "none",
-            borderRadius: 20, padding: "18px",
-            fontSize: 17, fontWeight: 800, color: "#fff",
-            cursor: "pointer", fontFamily: "inherit",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-          }}
-        >
+        <button onClick={marcarConcluido} style={{ width: "100%", background: crise.cor, border: "none", borderRadius: 20, padding: "18px", fontSize: 17, fontWeight: 800, color: "#fff", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
           {concluidos[passoAtual] ? "✓ Concluído" : isUltimo ? "✓ Finalizar" : "Fiz esse passo →"}
         </button>
         {passoAtual > 0 && (
-          <button onClick={() => setPassoAtual((p) => p - 1)} style={{
-            width: "100%", background: "transparent", border: "none",
-            color: "rgba(255,255,255,0.3)", fontSize: 13, marginTop: 12,
-            cursor: "pointer", fontFamily: "inherit", padding: "4px",
-          }}>
+          <button onClick={() => setPassoAtual((p) => p - 1)} style={{ width: "100%", background: "transparent", border: "none", color: "rgba(255,255,255,0.3)", fontSize: 13, marginTop: 12, cursor: "pointer", fontFamily: "inherit", padding: "4px" }}>
             ← Voltar ao passo anterior
           </button>
         )}
@@ -384,9 +454,10 @@ function ModoCrise({ crise, onSair }: { crise: Crise; onSair: () => void }) {
   );
 }
 
-// ── PROTOCOLO NORMAL ────────────────────────────────────────────────────────
+// ── PROTOCOLO ───────────────────────────────────────────────────────────────
 function Protocolo({ crise, onVoltar }: { crise: Crise; onVoltar: () => void }) {
   const [modoAtivo, setModoAtivo] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
   const [concluidos, setConcluidos] = useState<boolean[]>(new Array(crise.passos.length).fill(false));
 
   if (modoAtivo) return <ModoCrise crise={crise} onSair={() => setModoAtivo(false)} />;
@@ -398,124 +469,99 @@ function Protocolo({ crise, onVoltar }: { crise: Crise; onVoltar: () => void }) 
   };
 
   return (
-    <main style={{
-      minHeight: "100vh", background: "#d7ddf0",
-      fontFamily: "'DM Sans', -apple-system, sans-serif",
-      color: "#1E293B", paddingBottom: "2rem",
-    }}>
+    <>
+      {modalAberto && <ModalMaisSobre crise={crise} onFechar={() => setModalAberto(false)} />}
 
-      {/* HEADER */}
-      <div style={{ padding: "1.25rem 1.25rem 0", display: "flex", alignItems: "center", gap: 12 }}>
-        <button onClick={onVoltar} style={{
-          width: 44, height: 44, borderRadius: 16,
-          background: "#fff", border: "none", fontSize: 18,
-          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}>←</button>
-        <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8" }}>
-          SOS • Protocolo
-        </span>
-      </div>
+      <main style={{ minHeight: "100vh", background: "#d7ddf0", fontFamily: "'DM Sans', -apple-system, sans-serif", color: "#1E293B", paddingBottom: "2rem" }}>
 
-      {/* HERO CARD */}
-      <div style={{ padding: "1rem 1.25rem" }}>
-        <div style={{
-          background: crise.cor, borderRadius: 24,
-          padding: "1.5rem", position: "relative", overflow: "hidden",
-        }}>
-          <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.12)" }} />
-          <p style={{ fontSize: 40, marginBottom: 8 }}>{crise.emoji}</p>
-          <h1 style={{ fontSize: 26, fontWeight: 900, color: "#fff", marginBottom: 6 }}>{crise.titulo}</h1>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", lineHeight: 1.5, marginBottom: 16 }}>{crise.frase}</p>
-
-          {/* BOTÃO MODO CRISE */}
-          <button onClick={() => setModoAtivo(true)} style={{
-            background: "#fff", color: crise.corSolida,
-            border: "none", borderRadius: 999, padding: "10px 20px",
-            fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
-            display: "flex", alignItems: "center", gap: 6,
-          }}>
-            ⚡ Ativar Modo Crise
-          </button>
+        <div style={{ padding: "1.25rem 1.25rem 0", display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={onVoltar} style={{ width: 44, height: 44, borderRadius: 16, background: "#fff", border: "none", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>←</button>
+          <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8" }}>SOS • Protocolo</span>
         </div>
-      </div>
 
-      {/* PASSOS */}
-      <div style={{ padding: "0 1.25rem", display: "flex", flexDirection: "column", gap: 12 }}>
-        <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8", marginBottom: 4 }}>
-          Passos do protocolo
-        </p>
+        {/* HERO CARD */}
+        <div style={{ padding: "1rem 1.25rem" }}>
+          <div style={{ background: crise.cor, borderRadius: 24, padding: "1.5rem", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.12)" }} />
+            <p style={{ fontSize: 40, marginBottom: 8 }}>{crise.emoji}</p>
+            <h1 style={{ fontSize: 26, fontWeight: 900, color: "#fff", marginBottom: 6 }}>{crise.titulo}</h1>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", lineHeight: 1.5, marginBottom: 16 }}>{crise.frase}</p>
 
-        {crise.passos.map((passo, i) => (
-          <div key={i} style={{
-            background: concluidos[i] ? crise.corClara : "#fff",
-            borderRadius: 20, padding: "1rem 1.25rem",
-            border: concluidos[i] ? `1.5px solid ${crise.cor}40` : "0.5px solid rgba(0,0,0,0.06)",
-            transition: "all 0.2s",
-          }}>
-            <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 14, flexShrink: 0,
-                background: concluidos[i] ? crise.cor : "#F1F5F9",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20,
+            {/* BOTÕES LADO A LADO */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button onClick={() => setModoAtivo(true)} style={{
+                background: "#fff", color: crise.corSolida,
+                border: "none", borderRadius: 999, padding: "10px 18px",
+                fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
+                display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
               }}>
-                {concluidos[i] ? "✓" : passo.emoji}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: crise.cor, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Passo {i + 1}
-                  </p>
-                  <button onClick={() => marcar(i)} style={{
-                    background: concluidos[i] ? crise.cor : "transparent",
-                    border: `2px solid ${concluidos[i] ? crise.cor : "#CBD5E1"}`,
-                    borderRadius: "50%", width: 24, height: 24,
-                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 11, color: "#fff", transition: "all 0.2s",
-                  }}>
-                    {concluidos[i] ? "✓" : ""}
-                  </button>
-                </div>
-                <p style={{ fontSize: 15, fontWeight: 700, color: "#1E293B", marginBottom: 4 }}>{passo.titulo}</p>
-                <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.6 }}>{passo.descricao}</p>
+                ⚡ Ativar Modo Crise
+              </button>
 
-                {/* RESPIRAÇÃO */}
-                {passo.respiracao && (
-                  <div style={{ marginTop: 12, background: crise.corClara, borderRadius: 14, padding: "1rem" }}>
-                    <RespiracaoGuiada cor={crise.cor} />
-                  </div>
-                )}
-
-                {/* TIMER */}
-                {passo.timer && passo.timer > 0 && !passo.respiracao && (
-                  <div style={{ marginTop: 10 }}>
-                    <Timer segundos={passo.timer} cor={crise.cor} />
-                  </div>
-                )}
-              </div>
+              {crise.maisInfo && (
+                <button onClick={() => setModalAberto(true)} style={{
+                  background: "rgba(255,255,255,0.18)", color: "#fff",
+                  border: "1.5px solid rgba(255,255,255,0.4)",
+                  borderRadius: 999, padding: "10px 18px",
+                  fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                  display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
+                  backdropFilter: "blur(8px)",
+                }}>
+                  📖 Mais sobre
+                </button>
+              )}
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* APOIO FINAL */}
-      <div style={{ padding: "1.25rem 1.25rem 0" }}>
-        <div style={{ background: "#fff", borderRadius: 20, padding: "1.25rem", textAlign: "center" }}>
-          <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>
-            Você está fazendo o possível. 💙<br />
-            Quando passar, respire e cuide de você também.
-          </p>
-          <button onClick={onVoltar} style={{
-            marginTop: 12, background: "#F1F5F9", border: "none",
-            borderRadius: 999, padding: "10px 24px",
-            fontSize: 13, fontWeight: 600, color: "#64748B",
-            cursor: "pointer", fontFamily: "inherit",
-          }}>
-            Ver outras situações
-          </button>
         </div>
-      </div>
-    </main>
+
+        {/* PASSOS */}
+        <div style={{ padding: "0 1.25rem", display: "flex", flexDirection: "column", gap: 12 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8", marginBottom: 4 }}>Passos do protocolo</p>
+
+          {crise.passos.map((passo, i) => (
+            <div key={i} style={{ background: concluidos[i] ? crise.corClara : "#fff", borderRadius: 20, padding: "1rem 1.25rem", border: concluidos[i] ? `1.5px solid ${crise.cor}40` : "0.5px solid rgba(0,0,0,0.06)", transition: "all 0.2s" }}>
+              <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                <div style={{ width: 44, height: 44, borderRadius: 14, flexShrink: 0, background: concluidos[i] ? crise.cor : "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+                  {concluidos[i] ? "✓" : passo.emoji}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                    <p style={{ fontSize: 11, fontWeight: 700, color: crise.cor, textTransform: "uppercase", letterSpacing: "0.08em" }}>Passo {i + 1}</p>
+                    <button onClick={() => marcar(i)} style={{ background: concluidos[i] ? crise.cor : "transparent", border: `2px solid ${concluidos[i] ? crise.cor : "#CBD5E1"}`, borderRadius: "50%", width: 24, height: 24, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", transition: "all 0.2s" }}>
+                      {concluidos[i] ? "✓" : ""}
+                    </button>
+                  </div>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: "#1E293B", marginBottom: 4 }}>{passo.titulo}</p>
+                  <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.6 }}>{passo.descricao}</p>
+                  {passo.respiracao && (
+                    <div style={{ marginTop: 12, background: crise.corClara, borderRadius: 14, padding: "1rem" }}>
+                      <RespiracaoGuiada cor={crise.cor} />
+                    </div>
+                  )}
+                  {passo.timer && passo.timer > 0 && !passo.respiracao && (
+                    <div style={{ marginTop: 10 }}>
+                      <Timer segundos={passo.timer} cor={crise.cor} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ padding: "1.25rem 1.25rem 0" }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: "1.25rem", textAlign: "center" }}>
+            <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>
+              Você está fazendo o possível. 💙<br />
+              Quando passar, respire e cuide de você também.
+            </p>
+            <button onClick={onVoltar} style={{ marginTop: 12, background: "#F1F5F9", border: "none", borderRadius: 999, padding: "10px 24px", fontSize: 13, fontWeight: 600, color: "#64748B", cursor: "pointer", fontFamily: "inherit" }}>
+              Ver outras situações
+            </button>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 
@@ -528,84 +574,43 @@ export default function SOS() {
   }
 
   return (
-    <main style={{
-      minHeight: "100vh", background: "#d7ddf0",
-      fontFamily: "'DM Sans', -apple-system, sans-serif",
-      color: "#1E293B", paddingBottom: "2rem",
-    }}>
+    <main style={{ minHeight: "100vh", background: "#d7ddf0", fontFamily: "'DM Sans', -apple-system, sans-serif", color: "#1E293B", paddingBottom: "2rem" }}>
 
-      {/* HEADER */}
       <div style={{ padding: "1.25rem 1.25rem 0", display: "flex", alignItems: "center", gap: 12 }}>
-        <Link href="/" style={{
-          width: 44, height: 44, borderRadius: 16,
-          background: "#fff", textDecoration: "none", fontSize: 18,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)", color: "#1E293B",
-        }}>←</Link>
-        <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8" }}>
-          CareTEA • SOS
-        </span>
+        <Link href="/" style={{ width: 44, height: 44, borderRadius: 16, background: "#fff", textDecoration: "none", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", color: "#1E293B" }}>←</Link>
+        <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94A3B8" }}>CareTEA • SOS</span>
       </div>
 
-      {/* TÍTULO */}
       <div style={{ padding: "1.25rem 1.25rem 1rem", textAlign: "center" }}>
         <div style={{ fontSize: 44, marginBottom: 8 }}>📢</div>
-        <h1 style={{ fontSize: 26, fontWeight: 900, color: "#1E293B", marginBottom: 8 }}>
-          O que está acontecendo?
-        </h1>
+        <h1 style={{ fontSize: 26, fontWeight: 900, color: "#1E293B", marginBottom: 8 }}>O que está acontecendo?</h1>
         <p style={{ fontSize: 13, color: "#64748B", lineHeight: 1.6 }}>
           Toque na situação para ver o protocolo.<br />
           Use o <strong style={{ color: "#FF4D6D" }}>Modo Crise</strong> para guia passo a passo.
         </p>
       </div>
 
-      {/* GRID */}
       <div style={{ padding: "0 1.25rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {crises.map((crise) => (
-          <button key={crise.id} onClick={() => setCriseSelecionada(crise)} style={{
-            background: "#fff", border: `2px solid ${crise.cor}30`,
-            borderTop: `4px solid ${crise.cor}`,
-            borderRadius: 20, padding: "1.25rem 1rem",
-            cursor: "pointer", fontFamily: "inherit",
-            display: "flex", flexDirection: "column", alignItems: "center",
-            gap: 8, transition: "transform 0.15s",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
-          }}>
+          <button key={crise.id} onClick={() => setCriseSelecionada(crise)} style={{ background: "#fff", border: `2px solid ${crise.cor}30`, borderTop: `4px solid ${crise.cor}`, borderRadius: 20, padding: "1.25rem 1rem", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, transition: "transform 0.15s", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
             <span style={{ fontSize: 36 }}>{crise.emoji}</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#1E293B", textAlign: "center", lineHeight: 1.3 }}>
-              {crise.titulo}
-            </span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#1E293B", textAlign: "center", lineHeight: 1.3 }}>{crise.titulo}</span>
             <span style={{ fontSize: 11, fontWeight: 600, color: crise.cor }}>Ver protocolo →</span>
           </button>
         ))}
       </div>
 
-      {/* EMERGÊNCIA */}
       <div style={{ padding: "1.25rem" }}>
         <div style={{ background: "#fff", borderRadius: 20, padding: "1.25rem", textAlign: "center", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginBottom: 12 }}>
-            Situação de risco grave?
-          </p>
-          <a href="tel:190" style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            background: "#FF4D6D", color: "#fff", textDecoration: "none",
-            borderRadius: 999, padding: "14px 24px",
-            fontSize: 15, fontWeight: 800,
-            boxShadow: "0 4px 16px rgba(255,77,109,0.3)",
-          }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginBottom: 12 }}>Situação de risco grave?</p>
+          <a href="tel:190" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "#FF4D6D", color: "#fff", textDecoration: "none", borderRadius: 999, padding: "14px 24px", fontSize: 15, fontWeight: 800, boxShadow: "0 4px 16px rgba(255,77,109,0.3)" }}>
             📞 Ligar 190 — Emergência
           </a>
-          <a href="tel:192" style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            background: "#F1F5F9", color: "#475569", textDecoration: "none",
-            borderRadius: 999, padding: "12px 24px",
-            fontSize: 14, fontWeight: 700, marginTop: 8,
-          }}>
+          <a href="tel:192" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, background: "#F1F5F9", color: "#475569", textDecoration: "none", borderRadius: 999, padding: "12px 24px", fontSize: 14, fontWeight: 700, marginTop: 8 }}>
             🚑 SAMU — 192
           </a>
         </div>
       </div>
-
     </main>
   );
 }
