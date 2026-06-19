@@ -333,11 +333,12 @@ const quizPerguntas = [
 
 // Material complementar
 const materialComplementar = [
-  { icone: "📄", titulo: "Cartilha: O que é o TEA (CFM)", tipo: "PDF", cor: "#FF4D6D" },
+  { icone: "📄", titulo: "Documento: Treinamento de Habilidades para Cuidadores (CST) Tradução para Português", tipo: "PDF", cor: "#FF4D6D" },
   { icone: "🎥", titulo: "Documentário: O Mundo Autista", tipo: "Vídeo", cor: "#3BA7FF" },
   { icone: "📚", titulo: "Livro: Pensar em Imagens — Temple Grandin", tipo: "Livro", cor: "#A855F7" },
   { icone: "🌐", titulo: "Site: Autism Speaks Brasil", tipo: "Site", cor: "#22C55E" },
 ];
+
 
 // ─── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────
 export default function EntendendoOTEA() {
@@ -457,7 +458,7 @@ export default function EntendendoOTEA() {
 
   // ── PÁGINA DA AULA ──
   return (
-    <main className="min-h-screen bg-[#050d1a] pb-28 text-white">
+    <main className="min-h-screen bg-[#071325] pb-28 text-white">
 
       {/* HEADER FIXO */}
       <div className="sticky top-0 z-20 border-b border-white/5 bg-[#050d1a]/95 backdrop-blur-md">
