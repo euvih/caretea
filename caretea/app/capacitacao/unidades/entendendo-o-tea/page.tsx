@@ -553,20 +553,24 @@ export default function EntendendoOTEA() {
             </div>
 
             {tabAtiva === "video" && (
-              <div className="flex flex-col items-center gap-3 p-6 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#3BA7FF]/15 text-2xl">▶</div>
-                <p className="text-sm font-semibold text-white">Introdução ao TEA</p>
-                <p className="text-xs leading-6 text-[#475569]">
-                  Adicione aqui o embed do vídeo.<br />YouTube, Vimeo ou .mp4 hospedado.
-                </p>
-                <div
-                  className="w-full rounded-xl border border-dashed border-white/10 p-3 text-[10px] text-[#334155]"
-                  style={{ background: "rgba(255,255,255,0.03)" }}
-                >
-                  {`<iframe src="URL_DO_VIDEO" ... />`}
-                </div>
-              </div>
-            )}
+  <div className="flex flex-col items-center gap-3 p-6 text-center">
+    
+
+    <p className="text-sm font-semibold text-white">
+      Introdução ao TEA
+    </p>
+
+    <div className="w-full max-w-xl overflow-hidden rounded-2xl">
+      <iframe
+        className="h-64 w-full"
+        src="https://www.youtube.com/embed/y-_Ly5Tqggc"
+        title="Introdução ao TEA"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  </div>
+)}
 
             {tabAtiva === "audio" && (
               <div className="flex flex-col items-center gap-3 p-6 text-center">
@@ -1100,7 +1104,7 @@ export default function EntendendoOTEA() {
             </span>
           </Link>
         ))}
-      </nav>
+      </nav>https://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTbhttps://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTbhttps://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTb
     </main>
   );
 }
