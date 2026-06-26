@@ -1105,7 +1105,7 @@ export default function EntendendoOTEA() {
             </span>
           </Link>
         ))}
-      </nav>https://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTbhttps://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTbhttps://youtu.be/y-_Ly5Tqggc?si=YiOKRHzT9G_i7sTb
+      </nav>
     </main>
   );
 }
