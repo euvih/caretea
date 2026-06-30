@@ -69,7 +69,7 @@ const MEDALHAS: Medalha[] = [
 ];
 
 const NIVEIS = [
-  { min: 0,    max: 200,  titulo: "Cuidador Iniciante",    cor: "#64748B" },
+  { min: 0,    max: 200,  titulo: "Cuidador lll Iniciante",    cor: "#64748B" },
   { min: 200,  max: 500,  titulo: "Cuidador Preparado",    cor: "#3BA7FF" },
   { min: 500,  max: 1000, titulo: "Cuidador Experiente",   cor: "#A855F7" },
   { min: 1000, max: 2000, titulo: "Especialista CareTEA",  cor: "#F59E0B" },
